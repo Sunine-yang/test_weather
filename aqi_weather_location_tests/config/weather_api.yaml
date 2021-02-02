@@ -1,0 +1,45 @@
+
+requests:
+  baseURL: "http://139.159.198.98/pubDataServer/getPmRank?apikey=0710d94cebb4248a38edef859d11ab35"
+  sql: "select * from xy_w2_pm25 where city_id = (select cityCode from xy_w2_city_crawl_china_list WHERE accuCode='%s') and isvalid='1'"
+  sql_all: "select * from xy_w2_pm25 where  isvalid='1'"
+  city_code: "SELECT * FROM xy_w2_city_crawl_china_list  WHERE cityCode in (SELECT city_id from xy_w2_pm25 where isvalid='1')"
+
+
+requests_two:
+  baseURL: "http://139.159.198.98/vivoDbServer/locationgeo?apikey=0710d94cebb4248a38edef859d11ab35&longitude=%f&latitude=%f&locationSystem=GCJ02&language=zh-cn"
+  baseURL1: "http://pub.zuimeitianqi.com/vivoDbServer/locationgeo?apikey=0710d94cebb4248a38edef859d11ab35&longitude=%f&latitude=%f&locationSystem=GCJ02&language=zh-cn"
+  sql: "SELECT * FROM xy_w2_city_crawl_china_list a WHERE citycode COLLATE utf8mb4_general_ci IN (SELECT area_code FROM `mingzhenbu_city`) AND citycode != parentcode"
+  yanta_sql: "SELECT * FROM xy_w2_city_crawl_china_list a WHERE citycode COLLATE utf8mb4_general_ci IN (SELECT area_code FROM `mingzhenbu_city`) AND citycode != parentcode"
+
+
+typhoon:
+  baseURL: "http://typhoon.nmc.cn/weatherservice/typhoon/jsons/view_%s"
+  baseURL_list: "http://typhoon.nmc.cn/weatherservice/typhoon/jsons/list_default?t=1610502450124&callback=typhoon_jsons_list_default"
+  sql_typhoon_list: "select * from typhoon_list"
+  sql_typhoon_track: "select * from typhoon_track where typhoon_name_en = '%s' and t2 ='00' GROUP BY t1 ORDER BY t1"
+  sql_typhoon_track_time: "select * from typhoon_track where typhoon_name_en = '%s' and t2 ='00' and t1='%s' "
+  weather_typhoon: "http://139.159.198.98/pubDataServer/gettyphoon?apikey=0710d94cebb4248a38edef859d11ab35&typhoonid=%s"
+  weather_typhoon_list: "http://139.159.198.98/pubDataServer/gettyphoonlist?apikey=0710d94cebb4248a38edef859d11ab35"
+
+minute_test:
+  aqi: "http://139.159.198.98/pubDataServer/getPmRank?apikey=0710d94cebb4248a38edef859d11ab35"
+  weather_typhoon_list: "http://139.159.198.98/pubDataServer/gettyphoonlist?apikey=0710d94cebb4248a38edef859d11ab35"
+  sql_typhoon_track: "select * from typhoon_track WHERE typhoon_code= '%s' and t2 ='00' GROUP BY t1 ORDER BY t1"
+  location: "SELECT * FROM xy_w2_city_crawl_china_list a WHERE accuCode='1921951' "
+
+
+
+
+large_particles:
+  sql: "SELECT * FROM `xy_w2_city_crawl_oversea_list`  limit %d, %d"
+  baseurl: "http://139.159.198.98/pubDataServer/getweatherpub?apikey=0710d94cebb4248a38edef859d11ab35&citycode=&language=zh_CN&lon=%f&lat=%f&chl=&codeType=1"
+
+
+mysql:
+  ip: "139.9.217.1"
+  user: "testDbUser"
+  password: "Bestweather_zmtq^#@2020"
+  dbname: "weather"
+  port: "4108"
+  encode: "utf8"

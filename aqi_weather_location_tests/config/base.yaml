@@ -1,0 +1,21 @@
+# MySQL数据库连接配置
+mysql:
+  ip: 139.9.217.1
+  user: testDbUser
+  password: Bestweather_zmtq^#@2020
+  dbname: weather
+  port: 4108
+  encode: utf8
+
+# WebDriver基本配置
+webdriver:
+  browser: Chrome
+  url: https://t.zuimeitianqi.com/page/zh/today.html?cityId=01010101&lan=zh-cn&partner=hw&source=zm&space=A1&oriId=P2&source=zm
+
+# Requests基本配置
+requests:
+  baseURL: http://172.16.8.85:8080/
+
+# OpenCV2图像识别基本配置
+imageMatch:
+  similarity: 0.9

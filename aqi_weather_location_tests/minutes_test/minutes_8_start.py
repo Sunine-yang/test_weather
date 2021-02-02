@@ -1,0 +1,24 @@
+#-*-coding:GBK -*-
+import os
+import sys
+import time
+curPath = os.path.abspath(os.path.dirname(__file__))
+rootPath = os.path.split(curPath)[0]
+sys.path.append(rootPath)
+from minutes_test.aqi_weather import Aqi_Minutes
+from minutes_test.location import Location_Minutes
+from minutes_test.typhoon_test import Typhoon_Minutes
+import threading
+def threading_start():
+    while True:
+        try:
+            threads = [threading.Thread(target=Aqi_Minutes().api_start()),
+                       threading.Thread(target=Location_Minutes().location_start()),
+                       threading.Thread(target=Typhoon_Minutes().typhoon_start())]
+            for t in threads:
+                # Æô¶¯Ïß³Ì
+                t.start()
+            time.sleep(60)
+        except Exception as e:
+            print(e)
+threading_start()
