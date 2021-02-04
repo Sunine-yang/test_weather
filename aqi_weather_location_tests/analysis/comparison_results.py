@@ -23,8 +23,9 @@ class Result_check:
             if data[0] in data[1] or data[1] in data[0]:
                 return ''
             else:
-                self.logger.info(data[-1]%(data[1],data[0]))
-                return data[-1]%(data[1],data[0])
+                self.logger.info(data[-1]%(data[0]))
+                print(data[-1]%(data[0]))
+                return data[-1]%(data[0])
 
         except Exception as e:
             self.logger.info(e)
@@ -32,7 +33,7 @@ class Result_check:
     def comparison_not_in_check(self, *data):
         try:
             if data[0] not in data[1]:
-                return data[-1]
+                return data[0]
             else:
                 return ''
         except Exception as e:
@@ -78,6 +79,14 @@ class Result_check:
         except:
             pass
 
+    def time_check(self,*data):
+        try:
+            if data[0]==data[1] or  data[0]==data[1]-1 :
+                return ''
+            else:
+                return data[-1]%(data[0],data[1])
+        except:
+            pass
 
     def all_wait_data(self):
 
@@ -107,8 +116,5 @@ class Result_check:
             f.write(data)
             f.write('\n')
             f.close()
-    def wait_data_mail(self,data):
-        with open(Path_data.get_path()+'/test_data/test_log_report/%s.txt'%self.test_data_name, 'a+', encoding='utf8') as f:
-            f.write(data)
-            f.close()
+
 

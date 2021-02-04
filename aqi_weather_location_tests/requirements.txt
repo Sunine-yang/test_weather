@@ -13,6 +13,7 @@ lxml==4.6.2
 premailer==3.7.0
 pyaml==20.4.0
 pyjson5==1.4.8
+json5=0.9.5
 PyMySQL==1.0.2
 python-dateutil==2.8.1
 PyYAML==5.3.1
