@@ -76,7 +76,7 @@ class Test_Typhoon:
         for i in range(len(data_num)):
             Url_data().get_data(data_num[i][0])
             sql_datas=EasyMysql.query_all(self.read_ymal["sql_typhoon_track_time"]%data_num[i][1])
-            self.txt.write_data('sql_data/%s.txt' % data_num[i][1],'w+',str(sql_datas))
+            self.txt.write_data('sql_data/%s' % data_num[i][1],'w+',str(sql_datas))
 
             url_data = eval(self.txt.read_data('aqi_data/%s' % data_num[i][1]))
             sql_data = eval(self.txt.read_data('sql_data/%s' % data_num[i][1]))
@@ -175,6 +175,7 @@ class Test_Typhoon:
     def typhoon_start(self,name):
         self.result_check.list_data.append("**********中国气象*********")
         self.test_typhoob_list_start()
+
         self.test_typhoon_track_time()
         self.result_check.list_data.append("**********最美天气*********")
         self.weather_typhoon_list_check()
