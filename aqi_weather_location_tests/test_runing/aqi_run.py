@@ -12,6 +12,7 @@ class Test_api_start:
 
     def vivo_aqi(self):
         Test_weather_api('baseURL').air_quality_start('广州')
+        Test_weather_api('shanghai_baseURL').air_quality_start('上海')
     def test_aqi_start(self):
         self.vivo_aqi()
 

@@ -3,8 +3,10 @@ import datetime
 import time
 import pymysql
 from tools.logger import Logger
+from tools.read_yaml import ReadYaml
 class EasyMysql:
     logger=Logger.report_logger()
+    read_yaml=ReadYaml.read_yaml()['mysql']
     @classmethod
     def reConndb(cls):
 
@@ -16,12 +18,12 @@ class EasyMysql:
         while _conn_status and _conn_retries_count <= _max_retries_count:
             try:
                 print('连接数据库中..')
-                conn = pymysql.connect(host='139.9.217.1',
-                                       user='testDbUser',
-                                       password='Bestweather_zmtq^#@2020',
-                                       port=4108,
-                                       db='weather',
-                                       charset='utf8', connect_timeout=_conn_timeout)
+                conn = pymysql.connect(host=cls.read_yaml["host"],
+                                       user=cls.read_yaml["user"],
+                                       password=cls.read_yaml["password"],
+                                       port=cls.read_yaml["port"],
+                                       db=cls.read_yaml["db"],
+                                       charset=cls.read_yaml["charset"], connect_timeout=_conn_timeout)
                 _conn_status = False  # 如果conn成功则_status为设置为False则退出循环，返回db连接对象
                 return conn
             except:

@@ -1,69 +1,74 @@
 #-*-coding:GBK -*-
 import os
 import sys
+
+from tools.easy_mysql import EasyMysql
+
 curPath = os.path.abspath(os.path.dirname(__file__))
 rootPath = os.path.split(curPath)[0]
 sys.path.append(rootPath)
 from tools.read_yaml import ReadYaml
-from tools.easy_mysql import EasyMysql
 from lib.test_api import TestAPI
 from analysis.comparison_results import Result_check
 from tools.test_html import Test_mail
 from analysis.data_analysis import Data_analysis
 from analysis.url_data import Url_data
+from tools.write_read_json import Write_Read_Json
+from tools.write_data_txt import Write_Data_txt
 class Test_weather_api:
     def __init__(self,service):
+
+        self.txt=Write_Data_txt
+        self.json=Write_Read_Json
         self.service=service
         self.baseURL = ReadYaml().read_yaml()
         self.result_check=Result_check('Air_Quality_Ranking')
-    def url_data_exist_check(self,sql_data,url_data):
-        for i in range(0,len(sql_data)):
-            if str(sql_data[i][2]) in str(url_data["data"]):
+    def url_data_exist_check(self,sql_data_all,url_data):
+        for i in range(0,len(sql_data_all)):
+            if str(sql_data_all[i][2]) in str(url_data["data"]):
                 pass
             else:
                 result = '%s,%s |'\
-                         % (sql_data[i][2],sql_data[i][3])
-                check_data=self.result_check.comparison_not_in_check(str(sql_data[i][0]),str(url_data),'| 数据不存在')
+                         % (sql_data_all[i][3],sql_data_all[i][2])
+                check_data=self.result_check.comparison_not_in_check(str(sql_data_all[i][3]),str(url_data),'| 数据不存在')
                 if check_data=='':
                     pass
                 else:
                     self.result_check.list_data.append(result+check_data)
     def get_city_code(self):
-        global result
+        global result, length
         print('weather  aqi  start...........................')
-        Url_data().wait_aqi_json('baseURL')
-        Url_data().wait_aqi_sql_data('requests','city_code','aqi')
-        get_data = Url_data().read_aqi_json()
-        sql_data_all = Url_data().read_sql_data('aqi')
+        get_url = TestAPI.get_location(self.baseURL['requests']['baseURL']).json()
+        sql_data = EasyMysql.query_all(self.baseURL['requests']['sql_all'])
+        self.json.write_json('/aqi_data/aqi',get_url)
+        self.txt.write_data('/sql_data/aqi','w+',str(sql_data))
+        get_data=self.json.read_json('/aqi_data/aqi')
+        sql_data_all=eval(self.txt.read_data('/sql_data/aqi'))
+
         code_result=self.result_check.comparison_check(TestAPI.get('requests', 'baseURL').status_code, 200,'状态码:(%s/%s)')
         data_sum='url_len :%s  |  sql_len:%s 数据总量错误'%(len(get_data["data"]),len(sql_data_all))
         self.result_check.list_data.append(data_sum)
         self.url_data_exist_check(sql_data_all,get_data)
-
-        for i in range(len(get_data["data"])):
-            try:
-                key_check=self.except_check(get_data["data"][i])
-                sql_data = EasyMysql.query_one(self.baseURL['requests']['sql'] % get_data["data"][i]["cityCode"])
-                result='%s,%s |'%(get_data["data"][i]["cityCode"],sql_data[3])
-                length=self.result_check.comparison_check(len(get_data["data"][i]),5,'| 字节长度:(%s/%s)')
-                cityName=self.result_check.comparison_in_check(get_data["data"][i]["cityName"],sql_data[3],'| cityName:(%s/%s)')
-                aqi=self.result_check.comparison_check(int(get_data["data"][i]["aqi"]),int(sql_data[4]),'| aqi:(%s/%s)')
-                level=self.result_check.comparison_check(int(get_data["data"][i]["lv"]),int(sql_data[15]),'| level:(%s/%s)')
-                cityProv=self.result_check.comparison_none_check(get_data["data"][i]["cityProv"],'| cityProv:(%s)')
-                lv_aqi=self.test_aqi_level(get_data["data"][i])
-                result_data = length + cityName + aqi + level + str(lv_aqi)+cityProv + key_check+code_result
-                if result_data != '':
-                    self.result_check.list_data.append(result + result_data)
-
-                else:
-                    print(result +'检验通过')
-
-            except Exception as e:
-
-                self.result_check.list_data.append(result + '| %s 不存在' % e)
-                self.result_check.logger.warning(e)
-
-
+        for i in range(len(sql_data_all)):
+            for j in range(len(get_data["data"])):
+                try:
+                    if get_data["data"][j]["cityName"]==sql_data_all[i][3]:
+                        length = self.result_check.comparison_check(len(get_data["data"][j]), 5, '| 字节长度:(%s/%s)')
+                        result = '%s,%s |' % (get_data["data"][j]["cityCode"], sql_data_all[i][3])
+                        aqi = self.result_check.comparison_check(int(get_data["data"][j]["aqi"]), int(sql_data_all[i][4]),'| aqi:(%s/%s)')
+                        level = self.result_check.comparison_check(int(get_data["data"][j]["lv"]), int(sql_data_all[i][15]),'| level:(%s/%s)')
+                        cityProv = self.result_check.comparison_none_check(get_data["data"][j]["cityProv"],'| cityProv:(%s)')
+                        lv_aqi = self.test_aqi_level(get_data["data"][j])
+                        result_data = length  + aqi + level + str(lv_aqi) + cityProv + code_result
+                        if result_data != '':
+                                print(result_data)
+                                self.result_check.list_data.append(result + result_data)
+                        else:
+                            print(result + '检验通过')
+                    else:
+                            pass
+                except Exception as e:
+                        self.result_check.list_data.append(result+'| %s 不存在'%e)
 
     def test_aqi_level(self, url_data):
         if url_data["lv"] == 1 and int(url_data["aqi"]) > 0 and int(url_data["aqi"]) <= 50:
@@ -80,22 +85,7 @@ class Test_weather_api:
             return ''
         else:
             return '%s-%s'%(url_data["lv"],url_data["aqi"])
-    def except_check(self,url_data):
-        list_key_data = ['cityName', 'aqi', 'lv', 'cityProv','cityCode']
-        result_data = []
-        for i in range(len(list_key_data)):
-            if list_key_data[i] not in str(url_data):
-                result = '%s 不存在' % list_key_data[i]
-                result_data.append(result)
-            else:
-                pass
-        if result_data == []:
-            return ''
-        else:
-            data = str(result_data).replace("[", ' ')
-            data1 = data.replace("]", '')
-            data2=data1.replace(",","| ")
-            return data2
+
     def air_quality_start(self,name):
         self.get_city_code()
         self.result_check.wait_data_log('空气排行榜 错误数：%d'%(len(self.result_check.list_data)))

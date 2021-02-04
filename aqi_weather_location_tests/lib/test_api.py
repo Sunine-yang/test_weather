@@ -52,7 +52,7 @@ class TestAPI:
             cls.logger.info('ÇëÇóºÄÊ± %s' % (time_reault))
             return resp
         except:
-            raise
+            cls.get_location()
 
     @classmethod
     def get_location_tf(cls,baseURL):

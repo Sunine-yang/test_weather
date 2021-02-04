@@ -10,20 +10,22 @@ from tools.test_html import Test_mail
 from tools.write_data_txt import Write_Data_txt
 
 class Large_Particles:
-    def __init__(self):
-        self.yaml=ReadYaml.read_yaml()
+    def __init__(self,service):
+        self.yaml=ReadYaml.read_yaml()['large_particles']
         self.check=Result_check('Large_Particles_report')
         self.txt=Write_Data_txt
+        self.service=service
     def large_particles_check(self,unm1,num2):
 
 
-        sql_data = EasyMysql.query_all(self.yaml['large_particles']['sql'] % (unm1, num2))
+        global result, e
+        sql_data = EasyMysql.query_all(self.yaml['150million_sql'] % (unm1, num2))
         self.txt.write_data('/sql_data/%s'%num2,'w+',str(sql_data))
         read_sql=eval(self.txt.read_data('/sql_data/%s'%num2))
 
         for i in range(len(read_sql)):
             sql_data="%s,%s |"%(read_sql[i][1],read_sql[i][2])
-            get_url=TestAPI.get_location(self.yaml["large_particles"]["baseurl"]%(float(read_sql[i][6]),float(read_sql[i][7]))).json()
+            get_url=TestAPI.get_location(self.yaml[self.service]%read_sql[i][-2]).json()
             self.check.comparison_check(len(get_url),4,'| 字节长度:(%s/%s)')
             self.check.comparison_check(get_url["resultcode"],'0','| resultcode:(%s/%s)')
             self.check.comparison_check(get_url["resultinfo"],'OK','| resultinfo:(%s/%s)')
@@ -38,7 +40,7 @@ class Large_Particles:
                     liveInfos=self.check.comparison_is_none_check(get_url["data"]["liveInfos"],'| liveInfos:(%s)')
                     mobilelink=self.check.comparison_is_none_check(get_url["data"]["mobilelink"],'| mobilelink:(%s)')
                     city_check=self.city_check(get_url,read_sql[i],sql_data)
-                    condition_check=self.condition_check(get_url,sql_data)
+                    condition_check=self.condition_check(get_url)
                     dailys_check=self.dailys_check(get_url,sql_data)
                     hourlys_check=self.hourlys_check(get_url,sql_data)
                     result = data_len + city + condition + dailys + hourlys + liveInfos + mobilelink + city_check + condition_check + dailys_check + hourlys_check
@@ -46,8 +48,10 @@ class Large_Particles:
                         print(sql_data + '| 检测通过')
                     else:
                         self.check.list_data.append(sql_data + result)
-                except :
-                    pass
+                except Exception as e:
+                    self.check.list_data.append(sql_data + '| %s 不存在'%e)
+
+
 
 
 
@@ -55,66 +59,74 @@ class Large_Particles:
     def city_check(self, get_url, read_sql, sql_data):
         try:
             city_len=self.check.comparison_check(len(get_url["data"]["city"]),9,'| 字节长度:(%s/%s)')
-            ca=self.check.comparison_check(float(get_url["data"]["city"]["ca"]),float(read_sql[7]),'| ca:(%s/%s)')
+            ca=self.check.comparison_none_check(get_url["data"]["city"]["ca"],'| ca:(%s)')
             citycode=self.check.comparison_check(get_url["data"]["city"]["citycode"],read_sql[1],'| citycode:(%s/%s)')
-            co=self.check.comparison_check(float(get_url["data"]["city"]["co"]),float(read_sql[6]),'| co:(%s/%s)')
-            countryCode=self.check.comparison_none_check(get_url["data"]["city"]["countryCode"],'| countryCode:(%s)')
-            countryname=self.check.comparison_check(get_url["data"]["city"]["countryname"],read_sql[4],'| countryname:(%s/%s)')
+            co=self.check.comparison_none_check(get_url["data"]["city"]["co"],'| co:(%s)')
+            countryCode=self.check.comparison_check(get_url["data"]["city"]["countryCode"],read_sql[11],'| countryCode:(%s/%s)')
+            countryname=self.check.comparison_check(get_url["data"]["city"]["countryname"],read_sql[3],'| countryname:(%s/%s)')
             name=self.check.comparison_check(get_url["data"]["city"]["name"],read_sql[2],'| name:(%s/%s)')
             parentcity=self.check.comparison_is_none_check(get_url["data"]["city"]["parentcity"],'| parentcity:(%s)')
-            provincename=self.check.comparison_check(get_url["data"]["city"]["provincename"],read_sql[3],'| provincename:(%s/%s)')
-            timezone=self.check.comparison_check(get_url["data"]["city"]["timezone"],read_sql[5],'| timezone:(%s/%s)')
+            provincename=self.check.comparison_is_none_check(get_url["data"]["city"]["provincename"],'| provincename:(%s/%s)')
+            timezone=self.check.comparison_check(get_url["data"]["city"]["timezone"],read_sql[-5],'| timezone:(%s/%s)')
             result=city_len+ca+citycode+co+countryCode+countryname+countryname+name+parentcity+provincename+timezone
             if result=='':
                 return ''
             else:
                 return result
         except Exception as e:
-            return '| condition:%s 不存在'%e
-    def condition_check(self,get_url,sql_data):
+            return '| city:%s 不存在'%e
+    def condition_check(self,get_url):
+
         try:
-            condition_len=self.check.comparison_check(len(get_url["data"]["condition"]), 27,'| 字节长度:(%s/%s)')
-            cloudCover=self.check.comparison_none_check(get_url["data"]["condition"]["cloudCover"],'| cloudCover:(%s)')
-            cnweatherid=self.check.comparison_none_check(get_url["data"]["condition"]["cnweatherid"],'| cnweatherid:(%s)')
-            comfortlink=self.check.comparison_none_check(get_url["data"]["condition"]["comfortlink"],'| comfortlink:(%s)')
-            compareFlag=self.check.comparison_none_check(get_url["data"]["condition"]["compareFlag"],'| compareFlag:(%s)')
-            expiretime=self.check.comparison_none_check(get_url["data"]["condition"]["expiretime"],'| expiretime:(%s)')
-            feelTemperatureShade =self.check.comparison_none_check(get_url["data"]["condition"]["feelTemperatureShade"],'| feelTemperatureShade:(%s)')
-            humidity=self.check.comparison_none_check(get_url["data"]["condition"]["humidity"],'| humidity:(%s)')
-            mobilelink=self.check.comparison_none_check(get_url["data"]["condition"]["mobilelink"],'| mobilelink:(%s)')
-            precipitation=self.check.comparison_none_check(get_url["data"]["condition"]["precipitation"],'| precipitation:(%s)')
-            pressure=self.check.comparison_none_check(get_url["data"]["condition"]["pressure"],'| pressure:(%s)')
-            pressureTendency=self.check.comparison_none_check(get_url["data"]["condition"]["pressureTendency"],'| pressureTendency:(%s)')
-            realfeel=self.check.comparison_none_check(get_url["data"]["condition"]["realfeel"],'| realfeel:(%s)')
-            temperature=self.check.comparison_none_check(get_url["data"]["condition"]["temperature"],'| temperature:(%s)')
-            uVIndex=self.check.comparison_none_check(get_url["data"]["condition"]["uVIndex"],'| uVIndex:(%s)')
-            updatetime=self.check.comparison_none_check(get_url["data"]["condition"]["updatetime"],'| updatetime:(%s)')
-            uvIndexDesc=self.check.comparison_none_check(get_url["data"]["condition"]["uvIndexDesc"],'| uvIndexDesc:(%s)')
-            visibility=self.check.comparison_none_check(get_url["data"]["condition"]["visibility"],'| visibility:(%s)')
-            weatherid=self.check.comparison_none_check(get_url["data"]["condition"]["weatherid"],'| weatherid:(%s)')
-            weathertext=self.check.comparison_none_check(get_url["data"]["condition"]["weathertext"],'| weathertext:(%s)')
-            winddegrees=self.check.comparison_none_check(get_url["data"]["condition"]["winddegrees"],'| winddegrees:(%s)')
-            winddir=self.check.comparison_none_check(get_url["data"]["condition"]["winddir"],'| winddir:(%s)')
-            winddirtext=self.check.comparison_none_check(get_url["data"]["condition"]["winddirtext"],'| winddirtext:(%s)')
-            windgustdir=self.check.comparison_none_check(get_url["data"]["condition"]["windgustdir"],'| windgustdir:(%s)')
-            windgustlevel=self.check.comparison_none_check(get_url["data"]["condition"]["windgustlevel"],'| windgustlevel:(%s)')
-            windgustspeed=self.check.comparison_none_check(get_url["data"]["condition"]["windgustspeed"],'| windgustspeed:(%s)')
-            windlevel=self.check.comparison_none_check(get_url["data"]["condition"]["windlevel"],'| windlevel:(%s)')
-            windspeed=self.check.comparison_none_check(get_url["data"]["condition"]["windspeed"],'| windspeed:(%s)')
-            result=windspeed+windlevel+windgustspeed+windgustlevel+windgustdir+winddirtext+winddir+winddegrees+winddegrees+weathertext\
-            +weatherid+visibility+uvIndexDesc+updatetime+uVIndex+temperature+realfeel+pressureTendency+pressure+precipitation+mobilelink\
-                   +humidity+feelTemperatureShade+expiretime+compareFlag+comfortlink+cnweatherid+cloudCover+condition_len
-            if result == '':
-                return ''
+            if Data_analysis.hour_time_handle(
+                    get_url["data"]["condition"]["updatetime"]) < Data_analysis.hour_time_handle()-2:
+                self.check.list_data.append(get_url["data"]["condition"]["updatetime"]) ,Data_analysis.hour_time_handle()
             else:
-                return result
+                condition_len=self.check.comparison_check(len(get_url["data"]["condition"]), 27,'| condition_len:(%s/%s)')
+                cloudCover=self.check.comparison_none_check(get_url["data"]["condition"]["cloudCover"],'| cloudCover:(%s)')
+                cnweatherid=self.check.comparison_none_check(get_url["data"]["condition"]["cnweatherid"],'| cnweatherid:(%s)')
+                comfortlink=self.check.comparison_none_check(get_url["data"]["condition"]["comfortlink"],'| comfortlink:(%s)')
+                compareFlag=self.check.comparison_none_check(get_url["data"]["condition"]["compareFlag"],'| compareFlag:(%s)')
+                expiretime=self.check.comparison_none_check(get_url["data"]["condition"]["feelTemperatureShade"],'| feelTemperatureShade:(%s)')
+                feelTemperatureShade =self.check.comparison_none_check(get_url["data"]["condition"]["humidity"],'| humidity:(%s)')
+                humidity=self.check.comparison_none_check(get_url["data"]["condition"]["mobilelink"],'| mobilelink:(%s)')
+                mobilelink=self.check.comparison_none_check(get_url["data"]["condition"]["pressure"],'| pressure:(%s)')
+                precipitation=self.check.comparison_none_check(get_url["data"]["condition"]["pressureTendency"],'| precipitation:(%s)')
+                pressure=self.check.comparison_none_check(get_url["data"]["condition"]["pressure"],'| pressure:(%s)')
+                pressureTendency=self.check.comparison_none_check(get_url["data"]["condition"]["pressureTendency"],'| pressureTendency:(%s)')
+                realfeel=self.check.comparison_none_check(get_url["data"]["condition"]["realfeel"],'| realfeel:(%s)')
+                temperature=self.check.comparison_none_check(get_url["data"]["condition"]["temperature"],'| temperature:(%s)')
+                uVIndex=self.check.comparison_none_check(get_url["data"]["condition"]["uVIndex"],'| uVIndex:(%s)')
+                updatetime=self.check.comparison_none_check(get_url["data"]["condition"]["updatetime"],'| updatetime:(%s)')
+                uvIndexDesc=self.check.comparison_none_check(get_url["data"]["condition"]["uvIndexDesc"],'| uvIndexDesc:(%s)')
+                visibility=self.check.comparison_none_check(get_url["data"]["condition"]["visibility"],'| visibility:(%s)')
+                weatherid=self.check.comparison_none_check(get_url["data"]["condition"]["weatherid"],'| weatherid:(%s)')
+                weathertext=self.check.comparison_none_check(get_url["data"]["condition"]["weathertext"],'| weathertext:(%s)')
+                winddegrees=self.check.comparison_none_check(get_url["data"]["condition"]["winddegrees"],'| winddegrees:(%s)')
+                winddir=self.check.comparison_none_check(get_url["data"]["condition"]["winddir"],'| winddir:(%s)')
+                winddirtext=self.check.comparison_none_check(get_url["data"]["condition"]["winddirtext"],'| winddirtext:(%s)')
+                windgustdir=self.check.comparison_none_check(get_url["data"]["condition"]["windgustdir"],'| windgustdir:(%s)')
+                windgustlevel=self.check.comparison_none_check(get_url["data"]["condition"]["windgustlevel"],'| windgustlevel:(%s)')
+                windgustspeed=self.check.comparison_none_check(get_url["data"]["condition"]["windgustspeed"],'| windgustspeed:(%s)')
+                windlevel=self.check.comparison_none_check(get_url["data"]["condition"]["windlevel"],'| windlevel:(%s)')
+                windspeed=self.check.comparison_none_check(get_url["data"]["condition"]["windspeed"],'| windspeed:(%s)')
+                result=windspeed+windlevel+windgustspeed+windgustlevel+windgustdir+winddirtext+winddir+weathertext\
+                +weatherid+visibility+uvIndexDesc+updatetime+uVIndex+temperature+realfeel+precipitation+mobilelink\
+                       +humidity+feelTemperatureShade+expiretime+compareFlag+comfortlink+cnweatherid+cloudCover+condition_len+pressure+winddegrees+pressureTendency
+                if result == '':
+                    return ''
+                else:
+                    return result
         except Exception as e:
-             return '| condition:%s 不存在'%e
+
+
+            return '| condition:%s 不存在'%e
+
     # 多天预报检验
     def dailys_check(self, get_url,sql_data):
         global result, dailyweathers_lens, m
         for l in range(len(get_url["data"]["dailys"])):
-            self.check.comparison_check(len(get_url["data"]["dailys"]), 3, '| 字节长度:(%s/%s)')
+            self.check.comparison_check(len(get_url["data"]["dailys"]), 3, '| dailys_len:(%s/%s)')
             self.check.comparison_none_check(get_url["data"]["dailys"]["dailyweathers"], '| dailyweathers:(%s)')
             self.check.comparison_none_check(get_url["data"]["dailys"]["mobilelink"], '| mobilelink:(%s)')
             self.check.comparison_none_check(get_url["data"]["dailys"]["publictime"], '| publictime:(%s)')
@@ -143,9 +155,9 @@ class Large_Particles:
                     self.check.list_data.append(sql_data + data)
 
             for m in range(len(get_url["data"]["dailys"]["dailyweathers"])):
-                dailyweathers_lens=self.check.comparison_check(len(get_url["data"]["dailys"]["dailyweathers"]), 16, '| 字节长度:(%s/%s)')
+                dailyweathers_lens=self.check.comparison_check(len(get_url["data"]["dailys"]["dailyweathers"]), 16, '| dailyweathers_len:(%s/%s)')
                 for o in range(len(get_url["data"]["dailys"]["dailyweathers"][m])):
-                    dailyweathers_len=self.check.comparison_check(len(get_url["data"]["dailys"]["dailyweathers"][m]), 19,'| 字节长度:(%s/%s)')
+                    dailyweathers_len=self.check.comparison_check(len(get_url["data"]["dailys"]["dailyweathers"][m]), 19,'| dailyweathers_s_len:(%s/%s)')
                     conditionDay=self.check.comparison_none_check(get_url["data"]["dailys"]["dailyweathers"][m]["conditionDay"],'| conditionDay:(%s)')
                     conditionNight=self.check.comparison_is_none_check(get_url["data"]["dailys"]["dailyweathers"][m]["conditionNight"], '| conditionNight:(%s)')
                     currentFestival=self.check.comparison_is_none_check(get_url["data"]["dailys"]["dailyweathers"][m]["currentFestival"], '| currentFestival:(%s)')
@@ -184,7 +196,7 @@ class Large_Particles:
                     winddirs=self.check.comparison_none_check(get_url["data"]["dailys"]["dailyweathers"][m]["conditionDay"]["winddir"], '| winddir:(%s)')
                     windlevels=self.check.comparison_none_check(get_url["data"]["dailys"]["dailyweathers"][m]["conditionDay"]["windlevel"],'| windlevel:(%s)')
                     windspeeds=self.check.comparison_none_check(get_url["data"]["dailys"]["dailyweathers"][m]["conditionDay"]["windspeed"],'| windspeed:(%s)')
-                    # cloudCover_len=self.check.comparison_check(len(get_url["data"]["dailys"]["dailyweathers"][m]["cloudCover"]), 18, '| 字节长度:(%s/%s)')
+                    # cloudCover_len=self.check.comparison_check(len(get_url["data"]["dailys"]["dailyweathers"][m]["conditionNight"]), 18, '| 字节长度:(%s/%s)')
                     cloudCover=self.check.comparison_none_check(get_url["data"]["dailys"]["dailyweathers"][m]["conditionNight"]["cloudCover"],'| cloudCover:(%s)')
                     cnweatherid=self.check.comparison_none_check(get_url["data"]["dailys"]["dailyweathers"][m]["conditionNight"]["cnweatherid"],'| cnweatherid:(%s)')
                     ice=self.check.comparison_none_check( get_url["data"]["dailys"]["dailyweathers"][m]["conditionNight"]["ice"], '| ice:(%s)')
@@ -226,7 +238,7 @@ class Large_Particles:
             self.check.comparison_none_check(get_url["data"]["hourlys"]["hourlyweathers"])
 
             for u in range(len(get_url["data"]["hourlys"]["hourlyweathers"])):
-                self.check.comparison_check(len(get_url["data"]["hourlys"]["hourlyweathers"]), 72, '| 字节长度:(%s/%s)')
+                self.check.comparison_check(len(get_url["data"]["hourlys"]["hourlyweathers"]), 72, '| hourlyweathers_len:(%s/%s)')
                 Isdaynight = self.check.comparison_none_check(get_url["data"]["hourlys"]["hourlyweathers"][u]["Isdaynight"],'| Isdaynight:(%s)')
                 cloudCover = self.check.comparison_none_check(get_url["data"]["hourlys"]["hourlyweathers"][u]["cloudCover"],'| cloudCover:(%s)')
                 cnweatherid = self.check.comparison_none_check(get_url["data"]["hourlys"]["hourlyweathers"][u]["cnweatherid"],'| cnweatherid:(%s)')
@@ -260,11 +272,12 @@ class Large_Particles:
         if Data_analysis.document_check('Large_Particles_report')==None:
             pass
         else:
+
             Test_mail("[vivo]-[%s]-[数据]-[10万站点]-[%d]"%(name,(len(self.check.list_data))), 'Large_Particles_report').smtp_on()
             Data_analysis.data_delete('Large_Particles_report')
         self.check.list_data.clear()
 if __name__ == '__main__':
-    Large_Particles().large_particles_start(0,10,'全国')
+    Large_Particles('150million_url').large_particles_start(0,100,'全国')
     # Large_Particles().large_particles_start(10001,20000,'全国')
     # Large_Particles().large_particles_start(20000,30000,'全国')
     # Large_Particles().large_particles_start(30001,40000,'全国')

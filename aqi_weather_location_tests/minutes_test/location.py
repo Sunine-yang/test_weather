@@ -18,11 +18,10 @@ class Location_Minutes:
         print('location  start...........................')
         i=EasyMysql.query_all(self.url["minute_test"]["location"])[0]
         try:
-            url_data = self.url['requests_two']['baseURL'] % (eval(i[7]), eval(i[8]))
+            url_data = self.url['location']['baseURL'] % (eval(i[7]), eval(i[8]))
             status_code=self.result_check.comparison_check(TestAPI.get_location(url_data).status_code, 200,'状态码:(%s/%s)')
             url_get_data = eval(TestAPI.get_location(url_data).text)
             sql_info = '%s,%s,%s,%s |' % (i[2], i[3], i[7], i[8])
-            result_e = self.except_check(url_get_data)
             city = self.result_check.comparison_none_check(url_get_data, '| city:(%s)')
             countryCode = self.result_check.comparison_none_check(url_get_data["city"]["countryCode"],
                                                                   '| countryCode:(%s)')
@@ -47,7 +46,7 @@ class Location_Minutes:
                 Data_analysis.data_take_out_lin(url_get_data["city"]["englishCityName"]), '| englishCityName:(%s)')
             # self.location_check(url_get_data["city"]["administrativearea"]["level"],i[16])
             location_result = city + countryCode + englishCountryName + administrativearea + city_len + supplementalAdminAreas + Cityname + countryname + \
-                              citycode + timezone + resultcode + esultinfo + result_e + englishCityName + englishCityNamen+status_code
+                              citycode + timezone + resultcode + esultinfo + englishCityName + englishCityNamen+status_code
             if location_result != '':
                 self.result_check.list_data.append(sql_info + location_result)
             else:
@@ -56,24 +55,7 @@ class Location_Minutes:
         except Exception as e:
             self.result_check.list_data.append("| %s 不存在"%str(e))
 
-    def except_check(self,url_data):
-        list_key_data = ['countryCode', 'englishCountryName', 'englishCityName', 'administrativearea', 'city',
-                         'supplementalAdminAreas', 'name', 'countryname', 'timezone', 'citycode', 'resultcode',
-                         'englishCityName', 'level']
-        result_data=[]
-        for i in range(len(list_key_data)):
-            if list_key_data[i] not in str(url_data):
-                result = '| %s 不存在' % list_key_data[i]
-                result_data.append(result)
-            else:
-                pass
-        if result_data==[]:
-            return ''
-        else:
-            data=str(result_data).replace("[",' ')
-            data1=data.replace("]",'')
-            data2 = data1.replace(",", "| ")
-            return eval(data2)
+
     def list_check(self):
         if self.result_check.list_data==[]:
             return True

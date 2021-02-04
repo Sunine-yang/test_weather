@@ -133,5 +133,5 @@ class Data_analysis:
 
 
 if __name__ == '__main__':
-    print(Data_analysis.hour_time_handle(1612308600000))
+    print(Data_analysis.hour_time_handle())
 
