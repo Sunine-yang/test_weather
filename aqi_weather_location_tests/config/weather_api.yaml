@@ -1,7 +1,7 @@
 
 guangzhou:
   aqi_rul: "http://139.159.198.98/pubDataServer/getPmRank?apikey=0710d94cebb4248a38edef859d11ab35"
-  aqi_sql: "select * from xy_w2_pm25 where  isvalid='1'"
+  aqi_sql: "SELECT t.city_id,b.accuCode, b.cityname, b.province, t.aqi, t.aqi_level  FROM xy_w2_city_crawl_china_list b INNER JOIN xy_w2_pm25 t ON b.citycode = t.city_id WHERE t.isvalid = '1' AND t.crawl_time IS NOT NULL AND t.aqi!='0' AND t.city_id IS NOT NULL AND public_time > '7天' ORDER BY (t.aqi+0)"
   location_url: "http://139.159.198.98/vivoDbServer/locationgeo?apikey=0710d94cebb4248a38edef859d11ab35&longitude=%f&latitude=%f&locationSystem=GCJ02&language=zh-cn"
   location_sql: "SELECT * FROM xy_w2_city_crawl_china_list a WHERE citycode COLLATE utf8mb4_general_ci IN (SELECT area_code FROM `mingzhenbu_city`) AND citycode != parentcode"
   atmosphere_track: "http://typhoon.nmc.cn/weatherservice/typhoon/jsons/view_%s"
@@ -13,7 +13,7 @@ guangzhou:
 
 shanghai:
   aqi_rul: "http://pub.zuimeitianqi.com/pubDataServer/getPmRank?apikey=0710d94cebb4248a38edef859d11ab35"
-  aqi_sql: "select * from xy_w2_pm25 where  isvalid='1'"
+  aqi_sql: "SELECT t.city_id,b.accuCode, b.cityname, b.province, t.aqi, t.aqi_level  FROM xy_w2_city_crawl_china_list b INNER JOIN xy_w2_pm25 t ON b.citycode = t.city_id WHERE t.isvalid = '1' AND t.crawl_time IS NOT NULL AND t.aqi!='0' AND t.city_id IS NOT NULL AND public_time > '7天' ORDER BY (t.aqi+0)"
   location_url: "http://pub.zuimeitianqi.com/vivoDbServer/locationgeo?apikey=0710d94cebb4248a38edef859d11ab35&longitude=%f&latitude=%f&locationSystem=GCJ02&language=zh-cn"
   location_sql: "SELECT * FROM xy_w2_city_crawl_china_list a WHERE citycode COLLATE utf8mb4_general_ci IN (SELECT area_code FROM `mingzhenbu_city`) AND citycode != parentcode"
   atmosphere_track: "http://typhoon.nmc.cn/weatherservice/typhoon/jsons/view_%s"

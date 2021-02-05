@@ -28,8 +28,8 @@ class Test_weather_api:
                 pass
             else:
                 result = '%s,%s |'\
-                         % (sql_data_all[i][3],sql_data_all[i][2])
-                check_data=self.result_check.comparison_not_in_check(str(sql_data_all[i][3]),str(url_data), '| %s 数据缺失')
+                         % (sql_data_all[i][1],sql_data_all[i][2])
+                check_data=self.result_check.comparison_not_in_check(str(sql_data_all[i][1]),str(url_data), '| %s 数据缺失')
                 if check_data=='':
                     pass
                 else:
@@ -45,18 +45,21 @@ class Test_weather_api:
         sql_data_all=eval(self.txt.read_data('/sql_data/aqi'))
 
         code_result=self.result_check.comparison_check(TestAPI.get_location(self.baseURL[self.service]['aqi_rul']).status_code, 200,'状态码:(%s/%s)')
-        data_sum='url_len :%s  |  sql_len:%s 数据总量错误'%(len(get_data["data"]),len(sql_data_all))
-        self.result_check.list_data.append(data_sum)
+        data_sum=self.result_check.comparison_check(len(get_data["data"]),len(sql_data_all),'url_len :%s  |  sql_len:%s 数据总量错误')
+        if data_sum=='':
+            pass
+        else:
+            self.result_check.list_data.append(data_sum)
         self.url_data_exist_check(sql_data_all,get_data)
         for i in range(len(sql_data_all)):
             for j in range(len(get_data["data"])):
                 try:
-                    if get_data["data"][j]["cityName"]==sql_data_all[i][3]:
+                    if get_data["data"][j]["cityCode"]==sql_data_all[i][1]:
                         length = self.result_check.comparison_check(len(get_data["data"][j]), 5, '| 字节长度:(%s/%s)')
-                        result = '%s,%s |' % (get_data["data"][j]["cityCode"], sql_data_all[i][3])
+                        result = '%s,%s |' % (sql_data_all[i][1], sql_data_all[i][2])
                         aqi = self.result_check.comparison_check(int(get_data["data"][j]["aqi"]), int(sql_data_all[i][4]),'| aqi:(%s/%s)')
-                        level = self.result_check.comparison_check(int(get_data["data"][j]["lv"]), int(sql_data_all[i][15]),'| level:(%s/%s)')
-                        cityProv = self.result_check.comparison_none_check(get_data["data"][j]["cityProv"],'| cityProv:(%s)')
+                        level = self.result_check.comparison_check(int(get_data["data"][j]["lv"]), int(sql_data_all[i][5]),'| level:(%s/%s)')
+                        cityProv = self.result_check.comparison_check(get_data["data"][j]["cityProv"],sql_data_all[i][3],'| cityProv:(%s/%s)')
                         lv_aqi = self.test_aqi_level(get_data["data"][j])
                         result_data = length  + aqi + level + str(lv_aqi) + cityProv + code_result
                         if result_data != '':
