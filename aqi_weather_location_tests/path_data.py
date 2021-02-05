@@ -1,8 +1,7 @@
-# coding=<encoding name> ： # coding=utf-8
+#-*-coding:GBK -*-
 import os
 
 
-# 获取当前项目路径
 class Path_data:
 
     @classmethod

@@ -8,7 +8,7 @@ sys.path.append(rootPath)
     此处加设路径方便Linux读取时地址
 """
 import time
-from test_runing.setup_path import Setup_Istall
+from setup_path import Setup_Istall
 from test_cases_run.million_large_partices import Large_Particles
 from tools.html_report_my import Test_mail
 class Test_start:

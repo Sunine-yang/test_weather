@@ -1,4 +1,4 @@
-
+#-*-coding:GBK -*-
 
 from path_data import Path_data
 

@@ -1,3 +1,4 @@
+#-*-coding:GBK -*-
 import json
 
 from path_data import Path_data

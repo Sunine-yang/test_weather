@@ -8,7 +8,7 @@ sys.path.append(rootPath)
     此处加设路径方便Linux读取时地址
 """
 import time
-from test_runing.setup_path import Setup_Istall
+from setup_path import Setup_Istall
 from test_cases_run.test_typhoon_api import Test_Typhoon
 from test_cases_run.test_location_api import Test_Location
 from test_cases_run.test_weatheraqi import Test_weather_api
@@ -19,11 +19,10 @@ class Test_start:
     def vivo_api(self):
         try:
             while True:
-                time.sleep(self.time_info())
                 Test_weather_api('shanghai_baseURL').air_quality_start('上海')
                 Test_Typhoon("shanghai_weather_typhoon_list", 'shanghai_weather_typhoon').typhoon_start('上海')
                 Test_Location().location_start('baseURL1','上海')
-
+                time.sleep(self.time_info())
         except Exception as e:
             print('运行出错')
             Test_mail(e).smtp_on()
