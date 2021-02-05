@@ -16,3 +16,13 @@ class Write_Data_txt:
         with open(Path_data.get_path()+'/test_data/%s.txt'%data[0],'r',encoding='utf8') as f:
             result=f.read()
             return result
+
+    @classmethod
+    def read_data_readline(cls,*data):
+        with open(Path_data.get_path() + '/test_data/%s.txt' % data[0], 'r', encoding='utf8') as f:
+            result = f.readline()
+            return eval(result)
+
+if __name__ == '__main__':
+    datas=Write_Data_txt.read_data_readline('sql_data/20000')
+    print(datas)

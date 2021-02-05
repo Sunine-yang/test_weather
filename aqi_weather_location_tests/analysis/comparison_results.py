@@ -101,11 +101,7 @@ class Result_check:
             self.wait_data_log(self.list_data[i])
 
 
-    def data_delete(self):
-        Path_data.get_path()
-        path = os.listdir(Path_data.get_path()+"/test_data/test_log_report")
-        for i in range(len(path)):
-            os.unlink(Path_data.get_path()+"/test_data/test_log_report/%s" % path[i])
+
     def wait_data_log(self,data):
         with open(Path_data.get_path()+'/test_data/test_log_report/%s.txt'%self.test_data_name, 'a+', encoding='utf8') as f:
             f.write(data)

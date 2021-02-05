@@ -43,7 +43,7 @@ guangzhou_minutes:
 
 
 large_particles:
-  sql: "SELECT * FROM `xy_w2_city_crawl_oversea_list`  limit %d, %d"
+  sql: "SELECT * FROM `xy_w2_city_crawl_oversea_list`  limit %d, 10000"
   baseurl: "http://139.159.198.98/pubDataServer/getweatherpub?apikey=0710d94cebb4248a38edef859d11ab35&citycode=&language=zh_CN&lon=%f&lat=%f&chl=&codeType=1"
   guangzhou_150million_url: "http://139.159.198.98/pubDataServer/getweatherpub?apikey=0710d94cebb4248a38edef859d11ab35&citycode=%s&language=zh_CN&lon=&lat=&chl=&codeType=1"
   shanghai_150million_url: "http://pub.zuimeitianqi.com/pubDataServer/getweatherpub?apikey=0710d94cebb4248a38edef859d11ab35&citycode=%s&language=zh_CN&lon=&lat=&chl=&codeType=1"
