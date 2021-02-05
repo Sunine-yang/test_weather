@@ -16,16 +16,17 @@ from tools.html_report_my import Test_mail
 class Test_start:
     Setup_Istall.set_up_install()
     time.sleep(10)
+    services = 'shanghai'
     def vivo_api(self):
         try:
 
-            Test_weather_api('shanghai_baseURL').air_quality_start('上海')
-            Test_Typhoon("shanghai_weather_typhoon_list", 'shanghai_weather_typhoon').typhoon_start('上海')
-            Test_Location().location_start('baseURL1','上海')
+            Test_weather_api(self.services).air_quality_start('上海')
+            Test_Typhoon(self.services).typhoon_start('上海')
+            Test_Location(self.services).location_start('上海')
 
         except Exception as e:
-            print('运行出错')
-            Test_mail(e).smtp_on()
+            print('运行错误')
+            Test_mail(str(e)).smtp_on()
 
 
     def time_info(self):

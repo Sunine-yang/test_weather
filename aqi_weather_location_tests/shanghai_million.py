@@ -16,10 +16,10 @@ class Test_start:
     def vivo_api(self):
         try:
             for i in range(300):
-                Large_Particles('shanghai_150million_url').large_particles_start(eval("%s"%i+'0000'),eval("%s"%(i+1)+'0000'),'全国')
+                Large_Particles('shanghai_150million_url').large_particles_start(eval("%s"%i+'0000'),eval("%s"%(i+1)+'0000'),'上海')
         except Exception as e:
             print('运行出错')
-            Test_mail(e).smtp_on()
+            Test_mail(str(e)).smtp_on()
 
 
     def time_info(self):

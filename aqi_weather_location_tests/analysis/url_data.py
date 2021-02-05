@@ -3,17 +3,16 @@ import time,json
 from lib.test_api import TestAPI
 from tools.read_yaml import ReadYaml
 from tools.write_data_txt import Write_Data_txt
-from path_data import Path_data
-from tools.easy_mysql import EasyMysql
 class Url_data:
-    def __init__(self):
+    def __init__(self,sercice):
         self.read_yaml=ReadYaml.read_yaml()
         self.txt=Write_Data_txt
+        self.sercice=sercice
 
     def get_data(self,data):
         a=0
         list_data=[]
-        get_url = TestAPI.get_location(self.read_yaml["typhoon"]["baseURL"] % data).text
+        get_url = TestAPI.get_location(self.read_yaml[self.sercice]["atmosphere_track"] % data).text
         url_data = get_url.strip("typhoon_jsons_view_%s("%data)
         url_data1 = url_data.strip(");")
         result = json.loads(url_data1)["typhoon"]
@@ -30,7 +29,7 @@ class Url_data:
         self.txt.write_data('aqi_data/%s'%result[1],'w+',str(result))
 
     def get_number_list(self):
-        get_url = TestAPI.get_location(self.read_yaml["typhoon"]["baseURL_list"]).text
+        get_url = TestAPI.get_location(self.read_yaml[self.sercice]["atmosphere_list"]).text
         url_data = get_url.strip("typhoon_jsons_list_default(")
         url_data1 = url_data.strip(");")
         result=json.loads(url_data1)["typhoonList"]
@@ -53,6 +52,6 @@ class Url_data:
 
 
 if __name__ == '__main__':
-    Url_data().get_number_list()
+    Url_data('guangzhou_typhoon').get_number_list()
 
 

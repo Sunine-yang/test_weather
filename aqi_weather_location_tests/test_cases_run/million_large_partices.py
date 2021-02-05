@@ -277,7 +277,7 @@ class Large_Particles:
             Data_analysis.data_delete('Large_Particles_report')
         self.check.list_data.clear()
 if __name__ == '__main__':
-    Large_Particles('150million_url').large_particles_start(0,100,'全国')
+    Large_Particles('guangzhou_150million_url').large_particles_start(0,100,'全国')
     # Large_Particles().large_particles_start(10001,20000,'全国')
     # Large_Particles().large_particles_start(20000,30000,'全国')
     # Large_Particles().large_particles_start(30001,40000,'全国')

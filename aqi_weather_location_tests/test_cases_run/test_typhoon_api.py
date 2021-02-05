@@ -13,20 +13,19 @@ from tools.test_html import Test_mail
 from tools.write_read_json import Write_Read_Json
 from tools.write_data_txt import Write_Data_txt
 class Test_Typhoon:
-    def __init__(self,list_url,track_url):
+    def __init__(self,services):
         self.json=Write_Read_Json
         self.result_check=Result_check('typhoon_list_track')
-        self.read_ymal=ReadYaml.read_yaml()['typhoon']
+        self.read_ymal=ReadYaml.read_yaml()
         self.txt=Write_Data_txt
-        self.typhoon_list=list_url
-        self.typhoon_track=track_url
+        self.services=services
     def weather_typhoon_list_check(self):
 
         global result
         result= '台风列表接口 |'
         data_num=eval(self.txt.read_data('/aqi_data/typhoon_list'))
-        url_list = TestAPI.get_location(self.read_ymal[self.typhoon_list]).json()
-        code=self.result_check.comparison_check(TestAPI.get_location(self.read_ymal[self.typhoon_list]).status_code,200,'| 状态码:(%s/%s)')
+        url_list = TestAPI.get_location(self.read_ymal[self.services]['typhoon_list_url']).json()
+        code=self.result_check.comparison_check(TestAPI.get_location(self.read_ymal[self.services]['typhoon_list_url']).status_code,200,'| 状态码:(%s/%s)')
         ZtyphoonList=self.result_check.comparison_check(len(url_list),4,'| ZtyphoonList 字节长度:(%s/%s)')
         typhoonList=self.result_check.comparison_check(len(url_list["data"]["typhoonList"]),5,'t| typhoonList 字节长度:(%s/%s)')
         resultinfo=self.result_check.comparison_check(url_list["resultinfo"],'OK','| resultinfo:(%s/%s)')
@@ -58,9 +57,9 @@ class Test_Typhoon:
 #########################################################################################################################
     def test_typhoob_list_start(self):
         print('typhoon_list  start...........................')
-        Url_data().get_number_list()
+        Url_data(self.services).get_number_list()
         data_num=eval(self.txt.read_data('/aqi_data/typhoon_list'))
-        sql_num=EasyMysql.query_all(self.read_ymal["sql_typhoon_list"])
+        sql_num=EasyMysql.query_all(self.read_ymal[self.services]["typhoon_list_sql"])
         try:
             for i in range(len(data_num)):
                 self.result_check.comparison_in_check(str(data_num[i][3]),str(sql_num[i][1]),'url_data:%s  sql_data:%s')
@@ -74,8 +73,8 @@ class Test_Typhoon:
         global result_data
         data_num=eval(self.txt.read_data('aqi_data/typhoon_list'))
         for i in range(len(data_num)):
-            Url_data().get_data(data_num[i][0])
-            sql_datas=EasyMysql.query_all(self.read_ymal["sql_typhoon_track_time"]%data_num[i][1])
+            Url_data(self.services).get_data(data_num[i][0])
+            sql_datas=EasyMysql.query_all(self.read_ymal[self.services]["typhoon_track_sql"]%data_num[i][1])
             self.txt.write_data('sql_data/%s' % data_num[i][1],'w+',str(sql_datas))
 
             url_data = eval(self.txt.read_data('aqi_data/%s' % data_num[i][1]))
@@ -114,10 +113,10 @@ class Test_Typhoon:
         global url_report
         data_num=eval(self.txt.read_data('aqi_data/typhoon_list'))
         for i in range(len(data_num)):
-            get_url = TestAPI.get_location(self.read_ymal[self.typhoon_track] % ('20' + str(data_num[i][3]))).json()
+            get_url = TestAPI.get_location(self.read_ymal[self.services]['typhoon_track_url'] % ('20' + str(data_num[i][3]))).json()
             self.json.write_json('/aqi_data/20%s'%data_num[i][3],get_url)
             try:
-                sql_data = EasyMysql.query_all(self.read_ymal["sql_typhoon_track"] % data_num[i][1])
+                sql_data = EasyMysql.query_all(self.read_ymal[self.services]["typhoon_track_sql"] % data_num[i][1])
                 weather_url=self.json.read_json('aqi_data/%s'%('20'+str(data_num[i][3])))
                 url_report = '%s,%s'%(data_num[i][1],'20'+str(data_num[i][3]))
                 number=self.result_check.comparison_check(len(weather_url["data"]["track"]), len(sql_data),
@@ -194,5 +193,5 @@ class Test_Typhoon:
 
 if __name__ == '__main__':
     # Test_Typhoon("weather_typhoon_list",'weather_typhoon').typhoon_start('广州')
-    Test_Typhoon("shanghai_weather_typhoon_list",'shanghai_weather_typhoon').typhoon_start('上海')
+    Test_Typhoon('guangzhou_typhoon').typhoon_start('广州')
 

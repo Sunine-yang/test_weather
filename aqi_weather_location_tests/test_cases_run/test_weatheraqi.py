@@ -12,7 +12,6 @@ from lib.test_api import TestAPI
 from analysis.comparison_results import Result_check
 from tools.test_html import Test_mail
 from analysis.data_analysis import Data_analysis
-from analysis.url_data import Url_data
 from tools.write_read_json import Write_Read_Json
 from tools.write_data_txt import Write_Data_txt
 class Test_weather_api:
@@ -30,7 +29,7 @@ class Test_weather_api:
             else:
                 result = '%s,%s |'\
                          % (sql_data_all[i][3],sql_data_all[i][2])
-                check_data=self.result_check.comparison_not_in_check(str(sql_data_all[i][3]),str(url_data),'| 数据不存在')
+                check_data=self.result_check.comparison_not_in_check(str(sql_data_all[i][3]),str(url_data), '| %s 数据缺失')
                 if check_data=='':
                     pass
                 else:
@@ -38,14 +37,14 @@ class Test_weather_api:
     def get_city_code(self):
         global result, length
         print('weather  aqi  start...........................')
-        get_url = TestAPI.get_location(self.baseURL['requests']['baseURL']).json()
-        sql_data = EasyMysql.query_all(self.baseURL['requests']['sql_all'])
+        get_url = TestAPI.get_location(self.baseURL[self.service]['aqi_rul']).json()
+        sql_data = EasyMysql.query_all(self.baseURL[self.service]['aqi_sql'])
         self.json.write_json('/aqi_data/aqi',get_url)
         self.txt.write_data('/sql_data/aqi','w+',str(sql_data))
         get_data=self.json.read_json('/aqi_data/aqi')
         sql_data_all=eval(self.txt.read_data('/sql_data/aqi'))
 
-        code_result=self.result_check.comparison_check(TestAPI.get('requests', 'baseURL').status_code, 200,'状态码:(%s/%s)')
+        code_result=self.result_check.comparison_check(TestAPI.get_location(self.baseURL[self.service]['aqi_rul']).status_code, 200,'状态码:(%s/%s)')
         data_sum='url_len :%s  |  sql_len:%s 数据总量错误'%(len(get_data["data"]),len(sql_data_all))
         self.result_check.list_data.append(data_sum)
         self.url_data_exist_check(sql_data_all,get_data)
@@ -100,4 +99,4 @@ class Test_weather_api:
 
 
 if __name__ == '__main__':
-    Test_weather_api('baseURL').air_quality_start('广州')
+    Test_weather_api('guangzhou').air_quality_start('广州')

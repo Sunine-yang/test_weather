@@ -9,19 +9,20 @@ from tools.write_data_txt import Write_Data_txt
 
 
 class Test_Location:
-    def __init__(self):
+    def __init__(self,services):
         self.result_check=Result_check('Fixed_latitude_longitude')
-        self.read_yaml=ReadYaml.read_yaml()['location']
+        self.read_yaml=ReadYaml.read_yaml()
         self.txt=Write_Data_txt
-    def get_location(self,service):
+        self.services=services
+    def get_location(self):
         global sql_info
         print('location  start...........................')
-        result1 = EasyMysql.query_all(self.read_yaml['sql'])
+        result1 = EasyMysql.query_all(self.read_yaml[self.services]['location_sql'])
         self.txt.write_data('sql_data/location','w+',str(result1))
         txt_data = eval(self.txt.read_data('sql_data/location'))
         for i in range(len(txt_data)):
             try:
-                url_data = self.read_yaml[service] % (eval(txt_data[i][7]), eval(txt_data[i][8]))
+                url_data = self.read_yaml[self.services]["location_url"] % (eval(txt_data[i][7]), eval(txt_data[i][8]))
                 code=self.result_check.comparison_check(TestAPI.get_location(url_data).status_code,200,'| 状态码:(%s/%s)')
                 url_get_data = eval(TestAPI.get_location(url_data).text)
                 sql_info = '%s,%s,%s,%s |' % (txt_data[i][2],txt_data[i][3], txt_data[i][7], txt_data[i][8])
@@ -50,8 +51,8 @@ class Test_Location:
                 self.result_check.list_data.append(sql_info+'| %s 不存在'%e)
 
 
-    def location_start(self,service,name):
-        self.get_location(service)
+    def location_start(self,name):
+        self.get_location()
         self.result_check.wait_data_log('定位经纬度 错误数：%d' % (len(self.result_check.list_data)))
         self.result_check.all_wait_data()
         if Data_analysis.document_check('Fixed_latitude_longitude') == None:
@@ -64,4 +65,4 @@ class Test_Location:
 
 
 if __name__ == '__main__':
-    Test_Location().location_start('baseURL','广州')
+    Test_Location('guangzhou_location').location_start('广州')
