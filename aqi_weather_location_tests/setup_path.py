@@ -13,8 +13,7 @@ class Setup_Istall:
         print("此次安装的第三方库有：{}".format(libs))
         try:
             for lib in range(len(libs)):
-                print(libs)
-                os.system("pip install -i https://pypi.tuna.tsinghua.edu.cn/simple " + libs[lib])
+                os.system("pip3 install -i https://pypi.tuna.tsinghua.edu.cn/simple " + libs[lib])
             print("Successful")
         except:
             print("Failed Somehow")

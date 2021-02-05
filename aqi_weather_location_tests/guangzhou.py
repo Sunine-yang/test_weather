@@ -15,19 +15,18 @@ from test_cases_run.test_weatheraqi import Test_weather_api
 from tools.html_report_my import Test_mail
 class Test_start:
     Setup_Istall.set_up_install()
-    time.sleep(60)
+    time.sleep(10)
     def vivo_api(self):
         try:
-            while True:
-                Test_weather_api('baseURL').air_quality_start('广州')
-                Test_Typhoon("weather_typhoon_list", 'weather_typhoon').typhoon_start('广州')
-                Test_Location().location_start('baseURL','广州')
-                time.sleep(self.time_info())
+
+            Test_weather_api('baseURL').air_quality_start('广州')
+            Test_Typhoon("weather_typhoon_list", 'weather_typhoon').typhoon_start('广州')
+            Test_Location().location_start('baseURL','广州')
+
         except Exception as e:
             print('运行出错')
             Test_mail(e).smtp_on()
-        finally:
-            self.vivo_api()
+
 
     def time_info(self):
         total_time = time.strftime("%H:%M:%S", time.localtime(float(time.time())))

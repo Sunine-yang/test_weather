@@ -28,8 +28,7 @@ class Test_start:
         except Exception as e:
             print('ÔËÐÐ³ö´í')
             Test_mail(e).smtp_on()
-        finally:
-            self.vivo_api()
+
 
     def time_info(self):
         total_time = time.strftime("%H:%M:%S", time.localtime(float(time.time())))

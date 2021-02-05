@@ -15,13 +15,12 @@ class Test_start:
     Setup_Istall.set_up_install()
     def vivo_api(self):
         try:
-            for i in range(150):
+            for i in range(300):
                 Large_Particles('shanghai_150million_url').large_particles_start(eval("%s"%i+'0000'),eval("%s"%(i+1)+'0000'),'全国')
         except Exception as e:
             print('运行出错')
             Test_mail(e).smtp_on()
-        finally:
-            self.vivo_api()
+
 
     def time_info(self):
         total_time = time.strftime("%H:%M:%S", time.localtime(float(time.time())))
