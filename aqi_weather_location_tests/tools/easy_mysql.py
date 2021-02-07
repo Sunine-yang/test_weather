@@ -5,13 +5,12 @@ import pymysql
 from tools.logger import Logger
 from tools.read_yaml import ReadYaml
 class EasyMysql:
+   
     def __init__(self,service):
-        self.service=ReadYaml.read_yaml()[service]['sql_name']
         self.logger=Logger.report_logger()
-        self.read_yaml=ReadYaml.read_yaml()[self.service]
-
-
+        self.read_yaml = ReadYaml.read_yaml(service)[service]
     def reConndb(self):
+
         # 数据库连接重试功能和连接超时功能的DB连接
         _conn_status = True
         _max_retries_count = 10  # 设置最大重试次数
@@ -32,6 +31,7 @@ class EasyMysql:
                 _conn_retries_count += 1
                 print(_conn_retries_count)
                 print('连接数据库连接异常')
+                time.sleep(3)  # 此为测试看效果
             continue
 
     def query_one(self, sql):
@@ -47,13 +47,15 @@ class EasyMysql:
             self.logger.info('数据查询完成')
             end = datetime.datetime.now()
             time_reault=end-start
+            print(time_reault)
             self.logger.info('数据库查询耗时 %s'%(time_reault))
+            cursor.close()
+            self.reConndb().close()
             return query_result
         except:
             return None
-        finally:
-            cursor.close()
-            self.reConndb().close()
+
+
 
 
     def query_all(self, sql):
@@ -68,23 +70,18 @@ class EasyMysql:
             self.logger.info('数据查询完成')
             end = datetime.datetime.now()
             time_reault = end - start
+            print(time_reault)
             self.logger.info('数据库查询耗时 %s' % (time_reault))
+            cursor.close()
+            self.reConndb().close()
             return query_result
         except:
             return None
-        finally:
-            cursor.close()
-            self.reConndb().close()
 
-    def update(self, sql):
-        try:
-            cursor = self.reConndb().cursor()
-            self.reConndb().ping(reconnect=True)
-            cursor.execute(sql)
-            self.reConndb().commit()
-            cursor.close()
-            self.reConndb().close()
-            return True
-        except:
-            return None
 
+
+if __name__ == '__main__':
+
+    a=EasyMysql('guangzhou').query_all("SELECT * FROM xy_w2_city_crawl_china_list  WHERE cityCode in"
+                                       " (SELECT city_id from xy_w2_pm25 where isvalid='1')")
+    print(a)

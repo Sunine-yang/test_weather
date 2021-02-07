@@ -20,7 +20,7 @@ class Test_start:
     def vivo_api(self):
         try:
 
-            Test_weather_api(self.services).air_quality_start('上海')
+            # Test_weather_api(self.services).air_quality_start('上海')
             Test_Typhoon(self.services).typhoon_start('上海')
             Test_Location(self.services).location_start('上海')
 

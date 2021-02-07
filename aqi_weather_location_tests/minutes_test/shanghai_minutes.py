@@ -12,7 +12,7 @@ import threading
 from tools.html_report_my import Test_mail
 def threading_start():
 
-    service='shanghai_minutes'
+    service='shanghai'
     while True:
         try:
             threads = [threading.Thread(target=Aqi_Minutes(service).api_start()),
