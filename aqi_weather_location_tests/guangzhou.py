@@ -7,15 +7,16 @@ sys.path.append(rootPath)
 """
     此处加设路径方便Linux读取时地址
 """
-import time
 from setup_path import Setup_Istall
+Setup_Istall.set_up_install()
+import time
+
 from test_cases_run.test_typhoon_api import Test_Typhoon
 from test_cases_run.test_location_api import Test_Location
 from test_cases_run.test_weatheraqi import Test_weather_api
 from tools.html_report_my import Test_mail
 class Test_start:
-    Setup_Istall.set_up_install()
-    time.sleep(10)
+
     services = 'guangzhou'
     def vivo_api(self):
         try:
@@ -25,6 +26,7 @@ class Test_start:
             Test_Location(self.services).location_start('广州')
 
         except Exception as e:
+            print(e)
             print('运行错误')
             Test_mail(str(e)).smtp_on()
 

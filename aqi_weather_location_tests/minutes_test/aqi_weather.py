@@ -16,18 +16,18 @@ from tools.test_html import Test_mail
 from tools.write_read_json import Write_Read_Json
 class Aqi_Minutes:
     def __init__(self,service):
+        self.service = service
         self.result_check = Result_check('aqi_weather')
-        self.baseURL=ReadYaml.read_yaml()
+        self.baseURL=ReadYaml.read_yaml(self.service)[self.service]
         self.json=Write_Read_Json
-        self.services=service
     def aqi_weather(self):
-        global result
-        get_data = TestAPI.get_location(self.baseURL[self.services]['aqi_url']).json()
+        global sql_data
+        get_data = TestAPI.get_location(self.baseURL['minutes_aqi_url']).json()
         for i in range(len(get_data["data"])):
             try:
                 if get_data["data"][i]['cityName'] == '西安市':
-                    sql_data = EasyMysql.query_one(self.baseURL[self.services]['aqi_sql'] % get_data["data"][i]["cityCode"])
-                    result = '%s,%s |' % (get_data["data"][i]["cityCode"], sql_data[3])
+                    sql_data = EasyMysql(self.service).query_one(self.baseURL['minutes_aqi_sql'] % get_data["data"][i]["cityCode"])
+                    result = '%s,%s |' % (sql_data[1], sql_data[2])
                     length = self.result_check.comparison_check(len(get_data["data"][i]), 5, '| 字节长度:(%s/%s)')
                     cityName = self.result_check.comparison_in_check(get_data["data"][i]["cityName"], sql_data[3],'| cityName:(%s/%s)')
                     aqi = self.result_check.comparison_check(int(get_data["data"][i]["aqi"]), int(sql_data[4]),'| aqi:(%s/%s)')
@@ -40,7 +40,7 @@ class Aqi_Minutes:
                     else:
                         print(result +'检测正确')
             except Exception as e:
-                self.result_check.list_data.append(result + '| %s 不存在'%e)
+                self.result_check.list_data.append( '%s,%s |' % (sql_data[1], sql_data[2]) + '| %s 不存在'%e)
 
     def test_aqi_level(self, url_data):
         if url_data["lv"] == 1 and int(url_data["aqi"]) > 0 and int(url_data["aqi"]) <= 50:
@@ -100,4 +100,4 @@ class Aqi_Minutes:
 
 
 if __name__ == '__main__':
-    Aqi_Minutes('guangzhou_minutes').aqi_weather()
+    Aqi_Minutes('guangzhou').aqi_weather()

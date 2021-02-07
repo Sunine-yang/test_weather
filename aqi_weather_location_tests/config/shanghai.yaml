@@ -1,0 +1,25 @@
+shanghai:
+  aqi_rul: "http://pub.zuimeitianqi.com/pubDataServer/getPmRank?apikey=0710d94cebb4248a38edef859d11ab35"
+  aqi_sql: "SELECT t.city_id,b.accuCode, b.cityname, b.province, t.aqi, t.aqi_level  FROM xy_w2_city_crawl_china_list b INNER JOIN xy_w2_pm25 t ON b.citycode = t.city_id WHERE t.isvalid = '1' AND t.crawl_time IS NOT NULL AND t.aqi!='0' AND t.city_id IS NOT NULL AND public_time > %d ORDER BY (t.aqi+0)"
+  location_url: "http://pub.zuimeitianqi.com/vivoDbServer/locationgeo?apikey=0710d94cebb4248a38edef859d11ab35&longitude=%f&latitude=%f&locationSystem=GCJ02&language=zh-cn"
+  location_sql: "SELECT * FROM xy_w2_city_crawl_china_list a WHERE citycode COLLATE utf8mb4_general_ci IN (SELECT area_code FROM `mingzhenbu_city`) AND citycode != parentcode"
+  atmosphere_track: "http://typhoon.nmc.cn/weatherservice/typhoon/jsons/view_%s"
+  atmosphere_list: "http://typhoon.nmc.cn/weatherservice/typhoon/jsons/list_default?t=1610502450124&callback=typhoon_jsons_list_default"
+  typhoon_list_sql: "select * from typhoon_list"
+  typhoon_track_sql: "select * from typhoon_track where typhoon_name_en = '%s' and t2 ='00' ORDER BY t1"
+  typhoon_track_url: "http://pub.zuimeitianqi.com/pubDataServer/gettyphoon?apikey=0710d94cebb4248a38edef859d11ab35&typhoonid=%s"
+  typhoon_list_url: "http://pub.zuimeitianqi.com/pubDataServer/gettyphoonlist?apikey=0710d94cebb4248a38edef859d11ab35"
+  sql_name: 'shanghai_msql'
+  host: 192.168.0.57
+  user: weather
+  password: Zmtq_0p9o8i7u6y^#@2019
+  db: weather
+  port: 4108
+  charset: utf8
+  aqi_url: "http://pub.zuimeitianqi.com/pubDataServer/getPmRank?apikey=0710d94cebb4248a38edef859d11ab35"
+  minutes_aqi_sql: "select * from xy_w2_pm25 where city_id = (select cityCode from xy_w2_city_crawl_china_list WHERE accuCode='%s') and isvalid='1'"
+  minutes_location_url: "http://pub.zuimeitianqi.com/vivoDbServer/locationgeo?apikey=0710d94cebb4248a38edef859d11ab35&longitude=%f&latitude=%f&locationSystem=GCJ02&language=zh-cn"
+  minutes_typhoon_list_url: "http://pub.zuimeitianqi.com/pubDataServer/gettyphoonlist?apikey=0710d94cebb4248a38edef859d11ab35"
+  minutes_typhoon_track_sql: "select * from typhoon_track WHERE typhoon_code= '%s' and t2 ='00' GROUP BY t1 ORDER BY t1"
+  minutes_location_sql: "SELECT * FROM xy_w2_city_crawl_china_list a WHERE accuCode='1921951' "
+  minutes_typhoon_track_url: "http://pub.zuimeitianqi.com/pubDataServer/gettyphoon?apikey=0710d94cebb4248a38edef859d11ab35&typhoonid=%s"

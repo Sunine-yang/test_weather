@@ -15,19 +15,20 @@ from tools.write_data_txt import Write_Data_txt
 
 class Test_Location:
     def __init__(self,services):
+        self.services = services
         self.result_check=Result_check('Fixed_latitude_longitude')
-        self.read_yaml=ReadYaml.read_yaml()
+        self.read_yaml=ReadYaml.read_yaml(self.services)[self.services]
         self.txt=Write_Data_txt
-        self.services=services
+
     def get_location(self):
         global sql_info
         print('location  start...........................')
-        result1 = EasyMysql(self.services).query_all(self.read_yaml[self.services]['location_sql'])
+        result1 = EasyMysql(self.services).query_all(self.read_yaml['location_sql'])
         self.txt.write_data('sql_data/location','w+',str(result1))
         txt_data = eval(self.txt.read_data('sql_data/location'))
         for i in range(len(txt_data)):
             try:
-                url_data = self.read_yaml[self.services]["location_url"] % (eval(txt_data[i][7]), eval(txt_data[i][8]))
+                url_data = self.read_yaml["location_url"] % (eval(txt_data[i][7]), eval(txt_data[i][8]))
                 code=self.result_check.comparison_check(TestAPI.get_location(url_data).status_code,200,'| 状态码:(%s/%s)')
                 url_get_data = eval(TestAPI.get_location(url_data).text)
                 sql_info = '%s,%s,%s,%s |' % (txt_data[i][2],txt_data[i][3], txt_data[i][7], txt_data[i][8])
@@ -45,7 +46,6 @@ class Test_Location:
                 resultcode=self.result_check.comparison_check(url_get_data["resultcode"],'0','| resultcode:(%s/%s)')
                 esultinfo=self.result_check.comparison_check(url_get_data["resultinfo"],'success.','| esultinfo:(%s/%s)')
                 englishCityNamen=self.result_check.comparison_none_check(url_get_data["city"]["englishCityName"],'| englishCityName:(%s)')
-                # self.location_check(url_get_data["city"]["administrativearea"]["level"],i[16])
                 location_result = city + countryCode + englishCountryName + administrativearea + city_len + supplementalAdminAreas + Cityname + countryname + \
                                   citycode + timezone + resultcode + esultinfo+englishCityName+englishCityNamen+code
                 if location_result != '':
@@ -53,7 +53,7 @@ class Test_Location:
                 else:
                     print(sql_info+'| 测试通过')
             except Exception as e:
-                self.result_check.list_data.append(sql_info+'| %s 不存在'%e)
+                self.result_check.list_data.append('%s,%s,%s,%s |' % (txt_data[i][2],txt_data[i][3], txt_data[i][7], txt_data[i][8])+'| %s 不存在'%str(e))
 
 
     def location_start(self,name):
@@ -70,4 +70,4 @@ class Test_Location:
 
 
 if __name__ == '__main__':
-    Test_Location('shanghai').location_start('上海')
+    Test_Location('guangzhou').location_start('广州')

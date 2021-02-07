@@ -11,15 +11,16 @@ from tools.test_html import Test_mail
 
 class Location_Minutes:
     def __init__(self,service):
-        self.result_check = Result_check('location')
-        self.yaml=ReadYaml.read_yaml()
         self.services = service
+        self.result_check = Result_check('location')
+        self.yaml=ReadYaml.read_yaml(self.services)[self.services]
+
     def get_location(self):
 
         print('location  start...........................')
-        i=EasyMysql.query_all(self.yaml[self.services]["location_sql"])[0]
+        i=EasyMysql(self.services).query_all(self.yaml["location_sql"])[0]
         try:
-            url_data = self.yaml[self.services]['location_url'] % (eval(i[7]), eval(i[8]))
+            url_data = self.yaml['minutes_location_url'] % (eval(i[7]), eval(i[8]))
             status_code=self.result_check.comparison_check(TestAPI.get_location(url_data).status_code, 200,'×´Ì¬Âë:(%s/%s)')
             url_get_data = eval(TestAPI.get_location(url_data).text)
             sql_info = '%s,%s,%s,%s |' % (i[2], i[3], i[7], i[8])
@@ -101,4 +102,4 @@ class Location_Minutes:
 
 
 if __name__ == '__main__':
-    Location_Minutes('guangzhou_minutes').location_start()
+    Location_Minutes('guangzhou').location_start()

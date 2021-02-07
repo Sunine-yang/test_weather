@@ -1,12 +1,10 @@
 #-*-coding:GBK -*-
 import os
 import sys
-
-from tools.easy_mysql import EasyMysql
-
 curPath = os.path.abspath(os.path.dirname(__file__))
 rootPath = os.path.split(curPath)[0]
 sys.path.append(rootPath)
+from tools.easy_mysql import EasyMysql
 from tools.read_yaml import ReadYaml
 from lib.test_api import TestAPI
 from analysis.comparison_results import Result_check
@@ -19,7 +17,7 @@ class Test_weather_api:
         self.txt=Write_Data_txt
         self.json=Write_Read_Json
         self.service=service
-        self.baseURL = ReadYaml().read_yaml()
+        self.baseURL = ReadYaml().read_yaml(self.service)[self.service]
         self.result_check=Result_check('Air_Quality_Ranking')
     def url_data_exist_check(self,sql_data_all,url_data):
         for i in range(0,len(sql_data_all)):
@@ -37,17 +35,16 @@ class Test_weather_api:
         global result, length
         print('weather  aqi  start...........................')
 
-        get_url = TestAPI.get_location(self.baseURL[self.service]['aqi_rul']).json()
-        print(get_url)
-        print(self.baseURL[self.service]['aqi_sql'] % Data_analysis.aqi_time())
-        sql_data = EasyMysql(self.service).query_all(self.baseURL[self.service]['aqi_sql']%Data_analysis.aqi_time())
+        get_url = TestAPI.get_location(self.baseURL['aqi_rul']).json()
+        sql_data = EasyMysql(self.service).query_all(self.baseURL['aqi_sql']%Data_analysis.aqi_time())
+
 
         self.json.write_json('/aqi_data/aqi',get_url)
         self.txt.write_data('/sql_data/aqi','w+',str(sql_data))
         get_data=self.json.read_json('/aqi_data/aqi')
         sql_data_all=eval(self.txt.read_data('/sql_data/aqi'))
 
-        code_result=self.result_check.comparison_check(TestAPI.get_location(self.baseURL[self.service]['aqi_rul']).status_code, 200,'状态码:(%s/%s)')
+        code_result=self.result_check.comparison_check(TestAPI.get_location(self.baseURL['aqi_rul']).status_code, 200,'状态码:(%s/%s)')
         data_sum=self.result_check.comparison_check(len(get_data["data"]),len(sql_data_all),'url_len :%s  |  sql_len:%s 数据总量错误')
         if data_sum=='':
             pass
