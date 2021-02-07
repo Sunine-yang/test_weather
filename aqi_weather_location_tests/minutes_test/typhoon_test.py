@@ -19,7 +19,7 @@ class Typhoon_Minutes:
     def weather_typhoon_list_check(self):
         global result
         print('typhoon  start...........................')
-
+        Test_Typhoon('guangzhou').test_typhoob_list_start()
         data_num=eval(self.txt.read_data('/aqi_data/typhoon_list'))
         url_list = TestAPI.get_location(self.read_ymal[self.services]["typhoon_list_url"]).json()
         code = self.result_check.comparison_check(
