@@ -14,10 +14,11 @@ class Large_Particles:
         self.yaml=ReadYaml.read_yaml()
         self.check=Result_check('Large_Particles_report')
         self.txt=Write_Data_txt
+        self.services=None
     def large_particles_check(self,unm1,num2):
 
 
-        sql_data = EasyMysql.query_all(self.yaml['large_particles']['sql'] % (unm1, num2))
+        sql_data = EasyMysql(self.services).query_all(self.yaml['large_particles']['sql'] % (unm1, num2))
         self.txt.write_data('/sql_data/%s'%num2,'w+',str(sql_data))
         read_sql=eval(self.txt.read_data('/sql_data/%s'%num2))
 

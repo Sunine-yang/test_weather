@@ -128,10 +128,23 @@ class Data_analysis:
             mooth.update({"02":"28"})
             return mooth[moonth_s]
 
+    @classmethod
+    def time_data1(cls,data):
+        data_sj = time.strptime(data, "%Y-%m-%d %H:%M:%S")  # 定义格式
+        time_int = eval(str(int(time.mktime(data_sj)))+'000')
+        return time_int
 
+    @classmethod
+    def time_data2(cls,data):  # 传入参数
+        data_sj = time.localtime(int(data))
+        time_str = time.strftime("%Y-%m-%d %H:%M:%S", data_sj)  # 时间戳转换正常时间
+        return time_str
 
-
-
+    @classmethod
+    def aqi_time(cls):
+        time_data=int(str(int(time.time()))+'000')-604957000
+        return time_data
 if __name__ == '__main__':
-    print(Data_analysis.hour_time_handle())
+  Data_analysis.aqi_time()
+
 

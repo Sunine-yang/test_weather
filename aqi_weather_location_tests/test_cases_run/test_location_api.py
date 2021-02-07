@@ -17,7 +17,7 @@ class Test_Location:
     def get_location(self):
         global sql_info
         print('location  start...........................')
-        result1 = EasyMysql.query_all(self.read_yaml[self.services]['location_sql'])
+        result1 = EasyMysql(self.services).query_all(self.read_yaml[self.services]['location_sql'])
         self.txt.write_data('sql_data/location','w+',str(result1))
         txt_data = eval(self.txt.read_data('sql_data/location'))
         for i in range(len(txt_data)):

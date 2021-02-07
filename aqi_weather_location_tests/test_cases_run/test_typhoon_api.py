@@ -59,7 +59,7 @@ class Test_Typhoon:
         print('typhoon_list  start...........................')
         Url_data(self.services).get_number_list()
         data_num=eval(self.txt.read_data('/aqi_data/typhoon_list'))
-        sql_num=EasyMysql.query_all(self.read_ymal[self.services]["typhoon_list_sql"])
+        sql_num=EasyMysql(self.services).query_all(self.read_ymal[self.services]["typhoon_list_sql"])
         try:
             for i in range(len(data_num)):
                 self.result_check.comparison_in_check(str(data_num[i][3]),str(sql_num[i][1]),'url_data:%s  sql_data:%s')
@@ -116,7 +116,7 @@ class Test_Typhoon:
             get_url = TestAPI.get_location(self.read_ymal[self.services]['typhoon_track_url'] % ('20' + str(data_num[i][3]))).json()
             self.json.write_json('/aqi_data/20%s'%data_num[i][3],get_url)
             try:
-                sql_data = EasyMysql.query_all(self.read_ymal[self.services]["typhoon_track_sql"] % data_num[i][1])
+                sql_data = EasyMysql(self.services).query_all(self.read_ymal[self.services]["typhoon_track_sql"] % data_num[i][1])
                 weather_url=self.json.read_json('aqi_data/%s'%('20'+str(data_num[i][3])))
                 url_report = '%s,%s'%(data_num[i][1],'20'+str(data_num[i][3]))
                 number=self.result_check.comparison_check(len(weather_url["data"]["track"]), len(sql_data),

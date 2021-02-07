@@ -19,7 +19,7 @@ class Large_Particles:
 
 
         global result, e
-        sql_data = EasyMysql.query_all(self.yaml['150million_sql'] % (unm1, num2))
+        sql_data = EasyMysql(self.service).query_all(self.yaml['150million_sql'] % (unm1, num2))
         self.txt.write_data('/sql_data/%s'%num2,'w+',str(sql_data))
         read_sql=eval(self.txt.read_data('/sql_data/%s'%num2))
 
