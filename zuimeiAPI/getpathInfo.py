@@ -12,27 +12,27 @@ def get_Path():
 
 # 获取当前日志路径
 def log_Path():
-    path = get_Path() + "\\log\\"
+    path = get_Path() + "/log/"
     return path
 
 
 # 获取当前配置文件路径
 def conf_Path():
-    path = get_Path() + "\\config\\"
+    path = get_Path() + "/config/"
     return path
 
 
 # 获取当前数据路径
 def data_Path():
-    path = get_Path() + "\\data\\"
+    path = get_Path() + "/data/"
     return path
 
 def text_Path():
-    path = get_Path() + "\\text\\"
+    path = get_Path() + "/text/"
     return path
 
 def text_Path_shanghai():
-    path = get_Path() + "\\textshanghai\\"
+    path = get_Path() + "/textshanghai/"
     return path
 
 if __name__ == '__main__':  # 执行该文件，测试下是否OK
