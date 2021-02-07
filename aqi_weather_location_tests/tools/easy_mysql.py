@@ -12,7 +12,6 @@ class EasyMysql:
 
 
     def reConndb(self):
-        print(self.read_yaml)
         # 数据库连接重试功能和连接超时功能的DB连接
         _conn_status = True
         _max_retries_count = 10  # 设置最大重试次数
@@ -33,7 +32,6 @@ class EasyMysql:
                 _conn_retries_count += 1
                 print(_conn_retries_count)
                 print('连接数据库连接异常')
-                time.sleep(3)  # 此为测试看效果
             continue
 
     def query_one(self, sql):
@@ -90,7 +88,3 @@ class EasyMysql:
         except:
             return None
 
-if __name__ == '__main__':
-
-    a=EasyMysql('shanghai').query_all("SELECT t.city_id,b.accuCode, b.cityname, b.province, t.aqi, t.aqi_level  FROM xy_w2_city_crawl_china_list b INNER JOIN xy_w2_pm25 t ON b.citycode = t.city_id WHERE t.isvalid = '1' AND t.crawl_time IS NOT NULL AND t.aqi!='0' AND t.city_id IS NOT NULL AND public_time > 1612085434000 ORDER BY (t.aqi+0)")
-    print(a)
