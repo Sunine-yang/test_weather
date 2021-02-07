@@ -74,7 +74,7 @@ class Test_Typhoon:
         data_num=eval(self.txt.read_data('aqi_data/typhoon_list'))
         for i in range(len(data_num)):
             Url_data(self.services).get_data(data_num[i][0])
-            sql_datas=EasyMysql.query_all(self.read_ymal[self.services]["typhoon_track_sql"]%data_num[i][1])
+            sql_datas=EasyMysql(self.services).query_all(self.read_ymal[self.services]["typhoon_track_sql"]%data_num[i][1])
             self.txt.write_data('sql_data/%s' % data_num[i][1],'w+',str(sql_datas))
 
             url_data = eval(self.txt.read_data('aqi_data/%s' % data_num[i][1]))
