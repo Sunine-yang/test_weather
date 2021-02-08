@@ -104,5 +104,5 @@ class Test_weather_api:
 
 
 if __name__ == '__main__':
-    Test_weather_api('guangzhou').air_quality_start('上海')
+    Test_weather_api('guangzhou').air_quality_start('广州')
     # sql_data = EasyMysql('shanghai').query_all("self.baseURL[self.service]['aqi_sql'] % Data_analysis.aqi_time()")

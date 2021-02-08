@@ -100,4 +100,4 @@ class Aqi_Minutes:
 
 
 if __name__ == '__main__':
-    Aqi_Minutes('guangzhou').aqi_weather()
+    Aqi_Minutes('guangzhou').api_start('π„÷›')
