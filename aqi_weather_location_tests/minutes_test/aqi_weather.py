@@ -26,9 +26,7 @@ class Aqi_Minutes:
         for i in range(len(get_data["data"])):
             try:
                 if get_data["data"][i]['cityCode'] == '106566':
-                    print(get_data["data"][i]['cityName'])
                     sql_data = EasyMysql(self.service).query_one(self.baseURL['minutes_aqi_sql'] %'106566')
-                    print(sql_data)
                     length = self.result_check.comparison_check(len(get_data["data"][i]), 5, '| 字节长度:(%s/%s)')
                     result = '%s,%s |' % (sql_data[1], sql_data[2])
                     cityName=self.result_check.comparison_check(sql_data[2],get_data["data"][i]["cityName"],'| cityName:(%s/%s)')
@@ -60,7 +58,7 @@ class Aqi_Minutes:
         else:
             return '%s-%s'%(url_data["lv"],url_data["aqi"])
 
-    def api_start(self):
+    def api_start(self,name):
         global a
         a = 0
         self.aqi_weather()
@@ -71,7 +69,7 @@ class Aqi_Minutes:
                 a += 1
                 self.aqi_weather()
                 self.result_check.all_wait_data()
-                Test_mail("[vivo]-[广州]-[API]-[空气质量排行榜]-[第%d次]" % a, 'aqi_weather').smtp_on()
+                Test_mail("[vivo]-[%s]-[API]-[空气质量排行榜]-[第%d次]" % (name,a), 'aqi_weather').smtp_on()
                 Data_analysis.data_delete('aqi_weather')
                 self.result_check.list_data.clear()
         elif a>4:
@@ -84,7 +82,7 @@ class Aqi_Minutes:
                     self.result_check.list_data.append('***********************')
                     self.aqi_weather()
                     self.result_check.all_wait_data()
-            Test_mail("[vivo]-[广州]-[API]-[空气质量排行榜]-[第%d次]" % a, 'aqi_weather').smtp_on()
+            Test_mail("[vivo]-[%s]-[API]-[空气质量排行榜]-[第%d次]" % (name,a), 'aqi_weather').smtp_on()
             Data_analysis.data_delete('aqi_weather')
             self.result_check.list_data.clear()
         elif  a>=1 and a<=4:
@@ -94,7 +92,7 @@ class Aqi_Minutes:
                 a+=1
                 self.aqi_weather()
                 self.result_check.all_wait_data()
-                Test_mail("[vivo]-[广州]-[API]-[空气质量排行榜]-[第%d次]"%a , 'aqi_weather').smtp_on()
+                Test_mail("[vivo]-[%s]-[API]-[空气质量排行榜]-[第%d次]" % (name,a) , 'aqi_weather').smtp_on()
                 Data_analysis.data_delete('aqi_weather')
                 self.result_check.list_data.clear()
 
@@ -102,4 +100,4 @@ class Aqi_Minutes:
 
 
 if __name__ == '__main__':
-    Aqi_Minutes('guangzhou').aqi_weather()
+    Aqi_Minutes('guangzhou').api_start('广州')
