@@ -61,12 +61,11 @@ class Typhoon_Minutes:
         self.json.write_json('/aqi_data/20%s'%str(numbers),get_url)
         try:
             sql_data = EasyMysql(self.services).query_all(self.read_ymal["minutes_typhoon_track_sql"] % ('20'+str(numbers)))
-            print(sql_data)
             weather_url =self.json.read_json('/aqi_data/20%s'%str(numbers))
             url_report = '%s,%s |' % (sql_data[0][3], '20' + str(numbers))
-            number = self.result_check.comparison_check(len(weather_url["data"]["track"]), len(sql_data),'| 数据条数:(%d/%d)')
-            time_c = self.result_check.comparison_check(weather_url["data"]["changeTrender"][0]["time"],
-                                                        int(str(Data_analysis.time_disposes(sql_data[0][5])) + '000'),'| 起编时间:(%s/%s)')
+            number = self.result_check.comparison_check(len(sql_data),len(weather_url["data"]["track"]), '| 数据条数:(%d/%d)')
+            time_c = self.result_check.comparison_check(int(str(Data_analysis.time_disposes(sql_data[0][5])) + '000'),weather_url["data"]["changeTrender"][0]["time"],
+                                                        '| 起编时间:(%s/%s)')
             total_len = self.result_check.comparison_check(len(weather_url), 4,'| 总字段长度:(%s/%s)')
             data = self.result_check.comparison_check(len(weather_url["data"]), 10,'| data 字段长度:(%s/%s)')
             resultcode = self.result_check.comparison_check(weather_url["resultcode"], '0','| resultcode:(%s/%s)')
@@ -89,17 +88,16 @@ class Typhoon_Minutes:
             try:
                 url_report_time = url_report + sql_data[a][5]
                 track = self.result_check.comparison_check(len(weather_url["data"]["track"][a]), 6,'| track 字段长度:(%s/%s)')
-                centralPressure = self.result_check.comparison_check( weather_url["data"]["track"][a]["centralPressure"], sql_data[a][11],
+                centralPressure = self.result_check.comparison_check(  sql_data[a][11],weather_url["data"]["track"][a]["centralPressure"],
                     '| centralPressure:(%s/%s)')
-                latitude = self.result_check.comparison_check(weather_url["data"]["track"][a]["latitude"],sql_data[a][8],'| latitude:(%s/%s)')
-                level = self.result_check.comparison_check(weather_url["data"]["track"][a]["level"], sql_data[a][9],'| level:(%s/%s)')
-                longitude = self.result_check.comparison_check(weather_url["data"]["track"][a]["longitude"],sql_data[a][7],'| longitude:(%s/%s)')
-                windSpeed = self.result_check.comparison_check(weather_url["data"]["track"][a]["windSpeed"],sql_data[a][10],'| windSpeed speed:(%s/%s)')
-                time_d = self.result_check.comparison_check(weather_url["data"]["track"][a]["time"], int(
-                    str(Data_analysis.time_disposes(sql_data[a][5])) + '000'),'| time:(%s/%s)')
-                typhoonId = self.result_check.comparison_check(weather_url["data"]["typhoonId"], sql_data[a][1],'| typhoonId:(%s/%s)')
-                typhoonNameEn = self.result_check.comparison_check(weather_url["data"]["typhoonNameEn"],sql_data[a][2],'| typhoonNameEn:(%s/%s)')
-                typhoonNameZh = self.result_check.comparison_check(weather_url["data"]["typhoonNameZh"],sql_data[a][3],'| typhoonNameZh:(%s/%s)')
+                latitude = self.result_check.comparison_check(sql_data[a][8],weather_url["data"]["track"][a]["latitude"],'| latitude:(%s/%s)')
+                level = self.result_check.comparison_check(sql_data[a][9],weather_url["data"]["track"][a]["level"], '| level:(%s/%s)')
+                longitude = self.result_check.comparison_check(sql_data[a][7],weather_url["data"]["track"][a]["longitude"],'| longitude:(%s/%s)')
+                windSpeed = self.result_check.comparison_check(sql_data[a][10],weather_url["data"]["track"][a]["windSpeed"],'| windSpeed speed:(%s/%s)')
+                time_d = self.result_check.comparison_check(int(str(Data_analysis.time_disposes(sql_data[a][5])) + '000'),weather_url["data"]["track"][a]["time"], '| time:(%s/%s)')
+                typhoonId = self.result_check.comparison_check(sql_data[a][1],weather_url["data"]["typhoonId"],' | typhoonId:(%s/%s)')
+                typhoonNameEn = self.result_check.comparison_check(sql_data[a][2],weather_url["data"]["typhoonNameEn"],'| typhoonNameEn:(%s/%s)')
+                typhoonNameZh = self.result_check.comparison_check(sql_data[a][3],weather_url["data"]["typhoonNameZh"],'| typhoonNameZh:(%s/%s)')
                 typhoon_track = track + centralPressure + latitude + level + longitude + windSpeed + time_d + typhoonId + typhoonNameEn + typhoonNameZh
                 if typhoon_track != '':
                     self.result_check.list_data.append('%s |' % url_report_time + typhoon_track)

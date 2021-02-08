@@ -17,16 +17,19 @@ class Location_Minutes:
 
     def get_location(self):
 
+        global sql_info
         print('location  start...........................')
-        i=EasyMysql(self.services).query_all(self.yaml["location_sql"])[0]
+        txt_data=EasyMysql(self.services).query_all(self.yaml["location_sql"])[0]
         try:
-            url_data = self.yaml['minutes_location_url'] % (eval(i[7]), eval(i[8]))
+            url_data = self.yaml['minutes_location_url'] % (eval(txt_data[5]), eval(txt_data[6]))
             status_code=self.result_check.comparison_check(TestAPI.get_location(url_data).status_code, 200,'状态码:(%s/%s)')
             url_get_data = eval(TestAPI.get_location(url_data).text)
-            sql_info = '%s,%s,%s,%s |' % (i[2], i[3], i[7], i[8])
+            sql_info = '%s,%s,%s,%s |' % (txt_data[0], txt_data[1], txt_data[5], txt_data[6])
             city = self.result_check.comparison_none_check(url_get_data, '| city:(%s)')
             countryCode = self.result_check.comparison_none_check(url_get_data["city"]["countryCode"],
                                                                   '| countryCode:(%s)')
+            parentcity = self.result_check.comparison_none_check(url_get_data["city"]["parentcity"],
+                                                                 '| parentcity:(%s)')
             englishCountryName = self.result_check.comparison_none_check(url_get_data["city"]["englishCountryName"],
                                                                          '| englishCountryName:(%s)')
             englishCityName = self.result_check.comparison_none_check(url_get_data["city"]["englishCityName"],
@@ -36,26 +39,30 @@ class Location_Minutes:
             city_len = self.result_check.comparison_check(len(url_get_data["city"]), 11, '| city 字节长度:(%s/%s)')
             supplementalAdminAreas = self.result_check.comparison_is_none_check(
                 url_get_data["city"]["supplementalAdminAreas"], '| supplementalAdminAreas:(%s)')
-            Cityname = self.result_check.comparison_check(url_get_data["city"]["name"], i[3], '| CityCame:(%s/%s)')
-            countryname = self.result_check.comparison_check(url_get_data["city"]["countryname"], i[5],
+            Cityname = self.result_check.comparison_check( txt_data[1],url_get_data["city"]["name"],
+                                                          '| CityCame:(%s/%s)')
+            countryname = self.result_check.comparison_check( txt_data[3],url_get_data["city"]["countryname"],
                                                              '| countryname:(%s/%s)')
-            citycode = self.result_check.comparison_check(url_get_data["city"]["citycode"], i[2], '| citycode:(%s/%s)')
-            timezone = self.result_check.comparison_check(url_get_data["city"]["timezone"], i[6], '| timezone:(%s&%s)')
+            citycode = self.result_check.comparison_check(txt_data[0],url_get_data["city"]["citycode"],
+                                                          '| citycode:(%s/%s)')
+            timezone = self.result_check.comparison_check(txt_data[4],url_get_data["city"]["timezone"],
+                                                          '| timezone:(%s&%s)')
+            provincename = self.result_check.comparison_check(txt_data[2],url_get_data["city"]["provincename"],
+                                                              '| provincename:(%s&%s)')
             resultcode = self.result_check.comparison_check(url_get_data["resultcode"], '0', '| resultcode:(%s/%s)')
             esultinfo = self.result_check.comparison_check(url_get_data["resultinfo"], 'success.',
                                                            '| esultinfo:(%s/%s)')
-            englishCityNamen = self.result_check.comparison_none_check(
-                Data_analysis.data_take_out_lin(url_get_data["city"]["englishCityName"]), '| englishCityName:(%s)')
+            englishCityNamen = self.result_check.comparison_none_check(Data_analysis.data_take_out_lin(url_get_data["city"]["englishCityName"]), '| englishCityName:(%s)')
             # self.location_check(url_get_data["city"]["administrativearea"]["level"],i[16])
             location_result = city + countryCode + englishCountryName + administrativearea + city_len + supplementalAdminAreas + Cityname + countryname + \
-                              citycode + timezone + resultcode + esultinfo + englishCityName + englishCityNamen+status_code
+                              citycode + timezone + resultcode + esultinfo + englishCityName + englishCityNamen+status_code+parentcity+provincename
             if location_result != '':
                 self.result_check.list_data.append(sql_info + location_result)
             else:
                 print(sql_info +'检验通过')
 
         except Exception as e:
-            self.result_check.list_data.append("| %s 不存在"%str(e))
+            self.result_check.list_data.append(sql_info +"| %s 不存在"%str(e))
 
 
     def list_check(self):

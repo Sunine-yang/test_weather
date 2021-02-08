@@ -10,7 +10,6 @@ sys.path.append(rootPath)
 from setup_path import Setup_Istall
 Setup_Istall.set_up_install()
 import time
-
 from test_cases_run.test_typhoon_api import Test_Typhoon
 from test_cases_run.test_location_api import Test_Location
 from test_cases_run.test_weatheraqi import Test_weather_api
@@ -22,11 +21,11 @@ class Test_start:
         try:
 
             Test_weather_api(self.services).air_quality_start('广州')
-            Test_Typhoon(self.services).typhoon_start('广州')
+            Test_Typhoon(self.services).cnscene_typhoon_start('广州')
+            Test_Typhoon(self.services).weather_typhoon_start('广州')
             Test_Location(self.services).location_start('广州')
 
         except Exception as e:
-            print(e)
             print('运行错误')
             Test_mail(str(e)).smtp_on()
 

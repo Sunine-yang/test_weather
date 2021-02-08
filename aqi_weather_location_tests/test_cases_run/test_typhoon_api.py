@@ -62,9 +62,9 @@ class Test_Typhoon:
         sql_num=EasyMysql(self.services).query_all(self.read_ymal["typhoon_list_sql"])
         try:
             for i in range(len(data_num)):
-                self.result_check.comparison_in_check(str(data_num[i][3]),str(sql_num[i][1]),'url_data:%s  sql_data:%s')
-                self.result_check.comparison_check(data_num[i][2],sql_num[i][3],'url_data:%s  sql_data:%s')
-                self.result_check.comparison_check(data_num[i][1],sql_num[i][2],'url_data:%s  sql_data:%s')
+                self.result_check.comparison_in_check(str(sql_num[i][1]),str(data_num[i][3]),'sql_data:%s  url_data:%s ')
+                self.result_check.comparison_check(sql_num[i][3],data_num[i][2],'sql_data:%s  url_data:%s ')
+                self.result_check.comparison_check(sql_num[i][2],data_num[i][1],'sql_data:%s  url_data:%s ')
         except Exception as  e:
             self.result_check.logger.warning(str(e))
 
@@ -154,15 +154,15 @@ class Test_Typhoon:
             try:
                 url_report_time=url_report+sql_data[a][5]
                 track=self.result_check.comparison_check(len(weather_url["data"]["track"][a]), 6,'| track 字段长度:(%s/%s)')
-                centralPressure=self.result_check.comparison_check(weather_url["data"]["track"][a]["centralPressure"],sql_data[a][11],'| centralPressure:(%s/%s)')
-                latitude=self.result_check.comparison_check(weather_url["data"]["track"][a]["latitude"],sql_data[a][8],'| latitude:(%s/%s)')
-                level=self.result_check.comparison_check(weather_url["data"]["track"][a]["level"],sql_data[a][9], '| level:(%s/%s)')
-                longitude=self.result_check.comparison_check(weather_url["data"]["track"][a]["longitude"],sql_data[a][7],'| longitude:(%s/%s)')
-                windSpeed=self.result_check.comparison_check(weather_url["data"]["track"][a]["windSpeed"],sql_data[a][10],'| windSpeed speed:(%s/%s)')
-                time_d=self.result_check.comparison_check(weather_url["data"]["track"][a]["time"], int(str(Data_analysis.time_disposes(sql_data[a][5])) + '000'),'| time:(%s/%s)')
-                typhoonId=self.result_check.comparison_check(weather_url["data"]["typhoonId"], sql_data[a][1],'| typhoonId:(%s/%s)')
-                typhoonNameEn=self.result_check.comparison_check(weather_url["data"]["typhoonNameEn"], sql_data[a][2],'| typhoonNameEn:(%s/%s)')
-                typhoonNameZh=self.result_check.comparison_check(weather_url["data"]["typhoonNameZh"], sql_data[a][3],'| typhoonNameZh:(%s/%s)')
+                centralPressure=self.result_check.comparison_check(sql_data[a][11],weather_url["data"]["track"][a]["centralPressure"],'| centralPressure:(%s/%s)')
+                latitude=self.result_check.comparison_check(sql_data[a][8],weather_url["data"]["track"][a]["latitude"],'| latitude:(%s/%s)')
+                level=self.result_check.comparison_check(sql_data[a][9],weather_url["data"]["track"][a]["level"], '| level:(%s/%s)')
+                longitude=self.result_check.comparison_check(sql_data[a][7],weather_url["data"]["track"][a]["longitude"],'| longitude:(%s/%s)')
+                windSpeed=self.result_check.comparison_check(sql_data[a][10],weather_url["data"]["track"][a]["windSpeed"],'| windSpeed speed:(%s/%s)')
+                time_d=self.result_check.comparison_check( int(str(Data_analysis.time_disposes(sql_data[a][5])) + '000'),weather_url["data"]["track"][a]["time"],'| time:(%s/%s)')
+                typhoonId=self.result_check.comparison_check(sql_data[a][1],weather_url["data"]["typhoonId"] ,'| typhoonId:(%s/%s)')
+                typhoonNameEn=self.result_check.comparison_check( sql_data[a][2],weather_url["data"]["typhoonNameEn"],'| typhoonNameEn:(%s/%s)')
+                typhoonNameZh=self.result_check.comparison_check(sql_data[a][3],weather_url["data"]["typhoonNameZh"] ,'| typhoonNameZh:(%s/%s)')
                 typhoon_track=track+centralPressure+latitude+level+longitude+windSpeed+time_d+typhoonId+typhoonNameEn+typhoonNameZh
                 if typhoon_track != '':
                     self.result_check.list_data.append('%s |' % url_report_time + typhoon_track)
@@ -171,20 +171,32 @@ class Test_Typhoon:
             except Exception as e:
                 self.result_check.list_data.append(url_report_time+'| %s 不存在'%e)
 
-    def typhoon_start(self,name):
-        self.result_check.list_data.append("**********中国气象*********")
-        self.test_typhoob_list_start()
 
+    def cnscene_typhoon_start(self,name):
+        self.result_check.list_data.append("**********台风列表*********")
+        self.test_typhoob_list_start()
+        self.result_check.list_data.append("**********台风详情*********")
         self.test_typhoon_track_time()
-        self.result_check.list_data.append("**********最美天气*********")
+        self.result_check.wait_data_log('台风列表/详情 错误数：%d' % (len(self.result_check.list_data) - 2))
+        self.result_check.all_wait_data()
+        if Data_analysis.document_check('typhoon_list_track') == None:
+            pass
+        else:
+            Test_mail("[vivo]-[%s]-[数据]-[中国气象]-[台风列表/详情]-[%d]" % (name, (len(self.result_check.list_data) - 2)),
+                      'typhoon_list_track').smtp_on()
+            Data_analysis.data_delete('typhoon_list_track')
+        self.result_check.list_data.clear()
+    def weather_typhoon_start(self,name):
+        self.result_check.list_data.append("**********台风列表*********")
         self.weather_typhoon_list_check()
+        self.result_check.list_data.append("**********台风详情*********")
         self.test_weather_typhoon_check()
         self.result_check.wait_data_log('台风列表/详情 错误数：%d' % (len(self.result_check.list_data)-2))
         self.result_check.all_wait_data()
         if Data_analysis.document_check('typhoon_list_track') == None:
             pass
         else:
-            Test_mail("[vivo]-[%s]-[数据]-[台风列表/详情]-[%d]" % (name,(len(self.result_check.list_data)-2)), 'typhoon_list_track').smtp_on()
+            Test_mail("[vivo]-[%s]-[数据]-[最美天气]-[台风列表/详情]-[%d]" % (name,(len(self.result_check.list_data)-2)), 'typhoon_list_track').smtp_on()
             Data_analysis.data_delete('typhoon_list_track')
         self.result_check.list_data.clear()
 
@@ -193,5 +205,5 @@ class Test_Typhoon:
 
 if __name__ == '__main__':
     # Test_Typhoon("weather_typhoon_list",'weather_typhoon').typhoon_start('广州')
-    Test_Typhoon('guangzhou').typhoon_start('广州')
+    Test_Typhoon('guangzhou').cnscene_typhoon_start('广州')
 

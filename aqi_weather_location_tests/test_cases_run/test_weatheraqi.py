@@ -34,11 +34,8 @@ class Test_weather_api:
     def get_city_code(self):
         global result, length
         print('weather  aqi  start...........................')
-
         get_url = TestAPI.get_location(self.baseURL['aqi_rul']).json()
         sql_data = EasyMysql(self.service).query_all(self.baseURL['aqi_sql']%Data_analysis.aqi_time())
-
-
         self.json.write_json('/aqi_data/aqi',get_url)
         self.txt.write_data('/sql_data/aqi','w+',str(sql_data))
         get_data=self.json.read_json('/aqi_data/aqi')
@@ -58,11 +55,12 @@ class Test_weather_api:
 
                         length = self.result_check.comparison_check(len(get_data["data"][j]), 5, '| ×Ö½Ú³¤¶È:(%s/%s)')
                         result = '%s,%s |' % (sql_data_all[i][1], sql_data_all[i][2])
+                        cityName=self.result_check.comparison_check(sql_data_all[i][2],get_data["data"][j]["cityName"],'| cityName:(%s/%s)')
                         aqi = self.result_check.comparison_check( int(sql_data_all[i][4]),int(get_data["data"][j]["aqi"]),'| aqi:(%s/%s)')
                         level = self.result_check.comparison_check(int(sql_data_all[i][5]),int(get_data["data"][j]["lv"]) ,'| level:(%s/%s)')
                         cityProv = self.result_check.comparison_check(sql_data_all[i][3],get_data["data"][j]["cityProv"],'| cityProv:(%s/%s)')
                         lv_aqi = self.test_aqi_level(get_data["data"][j])
-                        result_data = length  + aqi + level + str(lv_aqi) + cityProv + code_result
+                        result_data = length  + aqi + level + str(lv_aqi) + cityProv + code_result+cityName
                         if result_data != '':
                             self.result_check.list_data.append(result + result_data)
 

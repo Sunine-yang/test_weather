@@ -145,6 +145,6 @@ class Data_analysis:
         time_data=int(str(int(time.time()))+'000')-604957000
         return time_data
 if __name__ == '__main__':
-  Data_analysis.aqi_time()
+  print(Data_analysis.aqi_time())
 
 
