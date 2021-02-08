@@ -10,7 +10,7 @@ class TestAPI:
 
     @classmethod
     def post(cls, data,requests,baseURL):
-        baseURL = ReadYaml.read_yaml('shanghai')[baseURL]
+        baseURL = ReadYaml.read_yaml()[requests][baseURL]
         try:
             url = baseURL + data['uri']
             headers = data['headers']
@@ -21,8 +21,8 @@ class TestAPI:
             raise
 
     @classmethod
-    def get(cls,requests):
-        baseURL = ReadYaml.read_yaml('shanghai')[requests]
+    def get(cls,requests,baseURL):
+        baseURL = ReadYaml.read_yaml()[requests][baseURL]
         try:
             url = baseURL
             start = datetime.datetime.now()
@@ -52,7 +52,7 @@ class TestAPI:
             cls.logger.info('ÇëÇóºÄÊ± %s' % (time_reault))
             return resp
         except:
-            raise
+            cls.get_location()
 
     @classmethod
     def get_location_tf(cls,baseURL):

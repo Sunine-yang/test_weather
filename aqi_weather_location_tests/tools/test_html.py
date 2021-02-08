@@ -31,7 +31,7 @@ class Test_mail:
 
         s = smtplib.SMTP('smtp.263.net', 465, timeout=30)
         s.login(self.user, self.pas)
-        s.sendmail(self.user, ['zhouyang@droi.com'], self.msg.as_string())
+        s.sendmail(self.user, ['zhouyang@droi.com','liuyang@droi.com','chengyu@droi.com','lizechen@droi.com','niuyuanman@droi.com'], self.msg.as_string())
         s.close()
 #
 if __name__ == '__main__':

@@ -106,7 +106,7 @@ class Typhoon_Minutes:
 
             except Exception as e:
                 self.result_check.list_data.append(url_report + '| %s 不存在' % e)
-    def typhoon_start(self,name):
+    def typhoon_start(self):
         global a
         a=0
         self.weather_typhoon_list_check()
@@ -119,7 +119,7 @@ class Typhoon_Minutes:
                 self.weather_typhoon_list_check()
                 self.test_weather_typhoon_check()
                 self.result_check.all_wait_data()
-                Test_mail("[vivo]-[%s]-[API]-[台风]-[第%d次]" % (name,a), 'weather_typhoon').smtp_on()
+                Test_mail("[vivo]-[广州]-[API]-[台风]-[第%d次]" % a, 'weather_typhoon').smtp_on()
                 self.result_check.list_data.clear()
         elif a > 4:
             for i in range(5):
@@ -132,7 +132,7 @@ class Typhoon_Minutes:
                     self.weather_typhoon_list_check()
                     self.test_weather_typhoon_check()
                     self.result_check.all_wait_data()
-            Test_mail("[vivo]-[%s]-[API]-[台风]-[第%d次]" % (name,a), 'weather_typhoon').smtp_on()
+            Test_mail("[vivo]-[广州]-[API]-[台风列表/详情]-[第%d次]" % a, 'weather_typhoon').smtp_on()
             Data_analysis.data_delete('weather_typhoon')
             self.result_check.list_data.clear()
         elif  a >= 1 and a <= 4:
@@ -143,11 +143,11 @@ class Typhoon_Minutes:
                 self.weather_typhoon_list_check()
                 self.test_weather_typhoon_check()
                 self.result_check.all_wait_data()
-                Test_mail("[vivo]-[%s]-[API]-[台风]-[第%d次]" % (name,a) , 'weather_typhoon').smtp_on()
+                Test_mail("[vivo]-[广州]-[API]-[台风]-[第%d次]"%a , 'weather_typhoon').smtp_on()
                 self.result_check.list_data.clear()
 
 
 
 
 if __name__ == '__main__':
-    Typhoon_Minutes('guangzhou').typhoon_start('广州')
+    Typhoon_Minutes('guangzhou').typhoon_start()

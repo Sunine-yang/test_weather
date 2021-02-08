@@ -70,7 +70,7 @@ class Location_Minutes:
             return True
         else:
             return False
-    def location_start(self,name):
+    def location_start(self):
         global a
         a = 0
         self.get_location()
@@ -80,7 +80,7 @@ class Location_Minutes:
             else:
                 a+=1
                 self.result_check.all_wait_data()
-                Test_mail("[vivo]-[%s]-[API]-[定位]-[第%d次]" %(name,a) , 'location').smtp_on()
+                Test_mail("[vivo]-[广州]-[API]-[定位]-[第%d次]" % a, 'location').smtp_on()
                 Data_analysis.data_delete('location')
                 self.result_check.list_data.clear()
         elif a > 4:
@@ -93,7 +93,7 @@ class Location_Minutes:
                     self.result_check.list_data.append('***********************')
                     self.get_location()
                     self.result_check.all_wait_data()
-            Test_mail("[vivo]-[%s]-[API]-[定位]-[第%d次]" %(name,a) , 'location').smtp_on()
+            Test_mail("[vivo]-[广州]-[API]-[定位经纬度]-[第%d次]" % a, 'location').smtp_on()
             Data_analysis.data_delete('location')
             self.result_check.list_data.clear()
         elif a >= 1 and a <= 4:
@@ -102,11 +102,11 @@ class Location_Minutes:
             else:
                 a += 1
                 self.result_check.all_wait_data()
-                Test_mail("[vivo]-[%s]-[API]-[定位]-[第%d次]" %(name,a) , 'location').smtp_on()
+                Test_mail("[vivo]-[广州]-[API]-[定位经纬度]-[第%d次]"%a , 'location').smtp_on()
                 Data_analysis.data_delete('location')
                 self.result_check.list_data.clear()
 
 
 
 if __name__ == '__main__':
-    Location_Minutes('guangzhou').location_start('广州')
+    Location_Minutes('guangzhou').location_start()
