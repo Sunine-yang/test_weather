@@ -8,7 +8,7 @@ from tools.read_yaml import ReadYaml
 from tools.test_html import Test_mail
 from tools.write_read_json import Write_Read_Json
 from tools.write_data_txt import Write_Data_txt
-from test_cases_run.test_typhoon_api import Test_Typhoon
+from test_cases_run.test_cn_typhoon import Test_CNTyphoon
 class Typhoon_Minutes:
     def __init__(self,service):
         self.services = service
@@ -16,11 +16,11 @@ class Typhoon_Minutes:
         self.read_ymal=ReadYaml.read_yaml(self.services)[self.services]
         self.json=Write_Read_Json
         self.txt=Write_Data_txt
-
+        self.num=0
     def weather_typhoon_list_check(self):
         global result
         print('typhoon  start...........................')
-        Test_Typhoon(self.services).test_typhoob_list_start()
+        Test_CNTyphoon(self.services).test_typhoob_list_start()
         data_num=eval(self.txt.read_data('/aqi_data/typhoon_list'))
         url_list = TestAPI.get_location(self.read_ymal["typhoon_list_url"]).json()
         code = self.result_check.comparison_check(
@@ -106,48 +106,46 @@ class Typhoon_Minutes:
 
             except Exception as e:
                 self.result_check.list_data.append(url_report + '| %s 不存在' % e)
-    def typhoon_start(self):
-        global a
-        a=0
+    def typhoon_start(self,name):
         self.weather_typhoon_list_check()
         self.test_weather_typhoon_check()
-        if a == 0:
+        if self.num == 0:
             if self.result_check.list_data == []:
-                a = 0
+                self.num = 0
             else:
-                a += 1
+                self.num += 1
                 self.weather_typhoon_list_check()
                 self.test_weather_typhoon_check()
                 self.result_check.all_wait_data()
-                Test_mail("[vivo]-[广州]-[API]-[台风]-[第%d次]" % a, 'weather_typhoon').smtp_on()
+                Test_mail("[vivo]-[%s]-[API]-[台风]-[第%d次]" % (name,self.num), 'weather_typhoon').smtp_on()
                 self.result_check.list_data.clear()
-        elif a > 4:
+        elif self.num > 4:
             for i in range(5):
                 if self.result_check.list_data == []:
-                    a = 0
+                    self.num = 0
                     break
                 else:
-                    a += 1
+                    self.num += 1
                     self.result_check.list_data.append('***********************')
                     self.weather_typhoon_list_check()
                     self.test_weather_typhoon_check()
                     self.result_check.all_wait_data()
-            Test_mail("[vivo]-[广州]-[API]-[台风列表/详情]-[第%d次]" % a, 'weather_typhoon').smtp_on()
+            Test_mail("[vivo]-[%s]-[API]-[台风]-[第%d次]" % (name,self.num), 'weather_typhoon').smtp_on()
             Data_analysis.data_delete('weather_typhoon')
             self.result_check.list_data.clear()
-        elif  a >= 1 and a <= 4:
+        elif  self.num >= 1 and self.num <= 4:
             if self.result_check.list_data == []:
-                a = 0
+                self.num = 0
             else:
-                a+=1
+                self.num+=1
                 self.weather_typhoon_list_check()
                 self.test_weather_typhoon_check()
                 self.result_check.all_wait_data()
-                Test_mail("[vivo]-[广州]-[API]-[台风]-[第%d次]"%a , 'weather_typhoon').smtp_on()
+                Test_mail("[vivo]-[%s]-[API]-[台风]-[第%d次]" % (name,self.num) , 'weather_typhoon').smtp_on()
                 self.result_check.list_data.clear()
 
 
 
 
 if __name__ == '__main__':
-    Typhoon_Minutes('guangzhou').typhoon_start()
+    Typhoon_Minutes('guangzhou').typhoon_start('广州')

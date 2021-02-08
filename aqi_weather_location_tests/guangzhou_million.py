@@ -8,15 +8,15 @@ sys.path.append(rootPath)
     此处加设路径方便Linux读取时地址
 """
 import time
-from setup_path import Setup_Istall
 from test_cases_run.million_large_partices import Large_Particles
 from tools.html_report_my import Test_mail
 class Test_start:
-    Setup_Istall.set_up_install()
+
     def vivo_api(self):
-        Large_Particles('guangzhou_150million_url').large_particles_start(eval("%s" % 0 + '0000'),eval("%s" % (0 + 1) + '0000'), '广州')
-        Large_Particles('guangzhou_150million_url').large_particles_start(eval("%s" % 1 + '0000'),eval("%s" % (1 + 1) + '0000'), '广州')
-        Large_Particles('guangzhou_150million_url').large_particles_start(eval("%s" % 2 + '0000'),eval("%s" % (2 + 1) + '0000'), '广州')
+        for i in range(300):
+            print(i)
+            Large_Particles('guangzhou').large_particles_start(int("%s" %i + '0000'), '广州')
+
 
 
 

@@ -22,3 +22,8 @@ guangzhou:
   minutes_typhoon_track_sql: "select * from typhoon_track WHERE typhoon_code= '%s' and t2 ='00' GROUP BY t1 ORDER BY t1"
   minutes_location_sql: "SELECT * FROM xy_w2_city_crawl_china_list a WHERE accuCode='1921951' "
   minutes_typhoon_track_url: "http://139.159.198.98/pubDataServer/gettyphoon?apikey=0710d94cebb4248a38edef859d11ab35&typhoonid=%s"
+  sql: "SELECT * FROM `xy_w2_city_crawl_oversea_list`  limit %d, 10000"
+  baseurl: "http://139.159.198.98/pubDataServer/getweatherpub?apikey=0710d94cebb4248a38edef859d11ab35&citycode=&language=zh_CN&lon=%f&lat=%f&chl=&codeType=1"
+  guangzhou_150million_url: "http://139.159.198.98/pubDataServer/getweatherpub?apikey=0710d94cebb4248a38edef859d11ab35&citycode=%s&language=zh_CN&lon=&lat=&chl=&codeType=1"
+  shanghai_150million_url: "http://pub.zuimeitianqi.com/pubDataServer/getweatherpub?apikey=0710d94cebb4248a38edef859d11ab35&citycode=%s&language=zh_CN&lon=&lat=&chl=&codeType=1"
+  150million_sql: "SELECT * FROM `xy_w2_city_relation_search_huawei` WHERE language_code = 'zh-cn' AND country_id != 'CN' LIMIT %s,10000"

@@ -20,15 +20,14 @@ class Aqi_Minutes:
         self.result_check = Result_check('aqi_weather')
         self.baseURL=ReadYaml.read_yaml(self.service)[self.service]
         self.json=Write_Read_Json
+        self.num=0
     def aqi_weather(self):
-        global sql_data
+        global result
         get_data = TestAPI.get_location(self.baseURL['minutes_aqi_url']).json()
         for i in range(len(get_data["data"])):
             try:
                 if get_data["data"][i]['cityCode'] == '106566':
-                    print(get_data["data"][i]['cityName'])
                     sql_data = EasyMysql(self.service).query_one(self.baseURL['minutes_aqi_sql'] %'106566')
-                    print(sql_data)
                     length = self.result_check.comparison_check(len(get_data["data"][i]), 5, '| 字节长度:(%s/%s)')
                     result = '%s,%s |' % (sql_data[1], sql_data[2])
                     cityName=self.result_check.comparison_check(sql_data[2],get_data["data"][i]["cityName"],'| cityName:(%s/%s)')
@@ -42,7 +41,7 @@ class Aqi_Minutes:
                     else:
                         print(result +'检测正确')
             except Exception as e:
-                self.result_check.list_data.append( sql_data + '| %s 不存在'%e)
+                self.result_check.list_data.append( result + '| %s 不存在'%(e))
 
     def test_aqi_level(self, url_data):
         if url_data["lv"] == 1 and int(url_data["aqi"]) > 0 and int(url_data["aqi"]) <= 50:
@@ -60,41 +59,39 @@ class Aqi_Minutes:
         else:
             return '%s-%s'%(url_data["lv"],url_data["aqi"])
 
-    def api_start(self):
-        global a
-        a = 0
+    def api_start(self,name):
         self.aqi_weather()
-        if a==0:
+        if self.num==0:
             if self.result_check.list_data == []:
-                a=0
+                self.num=0
             else:
-                a += 1
+                self.num += 1
                 self.aqi_weather()
                 self.result_check.all_wait_data()
-                Test_mail("[vivo]-[广州]-[API]-[空气质量排行榜]-[第%d次]" % a, 'aqi_weather').smtp_on()
+                Test_mail("[vivo]-[%s]-[API]-[空气质量排行榜]-[第%d次]" % (name,self.num), 'aqi_weather').smtp_on()
                 Data_analysis.data_delete('aqi_weather')
                 self.result_check.list_data.clear()
-        elif a>4:
+        elif self.num>4:
             for i in range(5):
                 if self.result_check.list_data == []:
                     a = 0
                     break
                 else:
-                    a += 1
+                    self.num += 1
                     self.result_check.list_data.append('***********************')
                     self.aqi_weather()
                     self.result_check.all_wait_data()
-            Test_mail("[vivo]-[广州]-[API]-[空气质量排行榜]-[第%d次]" % a, 'aqi_weather').smtp_on()
+            Test_mail("[vivo]-[%s]-[API]-[空气质量排行榜]-[第%d次]" % (name,self.num), 'aqi_weather').smtp_on()
             Data_analysis.data_delete('aqi_weather')
             self.result_check.list_data.clear()
-        elif  a>=1 and a<=4:
+        elif  self.num>=1 and self.num<=4:
             if self.result_check.list_data == []:
-                a = 0
+                self.num = 0
             else:
-                a+=1
+                self.num+=1
                 self.aqi_weather()
                 self.result_check.all_wait_data()
-                Test_mail("[vivo]-[广州]-[API]-[空气质量排行榜]-[第%d次]"%a , 'aqi_weather').smtp_on()
+                Test_mail("[vivo]-[%s]-[API]-[空气质量排行榜]-[第%d次]" % (name,self.num) , 'aqi_weather').smtp_on()
                 Data_analysis.data_delete('aqi_weather')
                 self.result_check.list_data.clear()
 
