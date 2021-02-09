@@ -59,12 +59,13 @@ class LiveInfos:
                                 try:
                                     time = data['data']['additionalLiveInfos'][i]['levelList'][j]['day']
                                 except BaseException:
-
+                                    live_re_1 = data['data']['additionalLiveInfos'][i]['name']
+                                    live_date_1 = data['data']['additionalLiveInfos'][i]['levelList'][j]['day']
                                     print(f"生活指数,日期有参数缺失问题，定位为：{accucode},节点为：{i}，{j}")
                                     # logger.info(f"生活指数,日期有参数缺失问题，定位为：{accucode},节点为：{i}，{j}")
                                     erro_city_num += 1
                                     with open(self.text_aaa + "big_liveinfos.txt", mode='a+', encoding='utf-8') as f:
-                                        f.write(f'[{accucode} / {cityname}] - {i},{j}[日期的参数不存在]\n')
+                                        f.write(f'[{accucode} / {cityname}] - {live_re_1},{live_date_1}[日期的参数不存在]\n')
                                     flag1 = False
                                 else:
                                     now = datetime.datetime.now()
@@ -73,13 +74,15 @@ class LiveInfos:
                                     if time == day1_re:
                                         num += 1
                                     else:
+                                        live_re_1 = data['data']['additionalLiveInfos'][i]['name']
+                                        live_date_1 = data['data']['additionalLiveInfos'][i]['levelList'][j]['day']
                                         num += 1
                                         print(f"生活指数-日期错误-节点-[{i},{j}]-定位-[{accucode}]")
                                         # logger.info(f"生活指数,日期有问题，定位为：{accucode},节点为：{i}，{j}")
                                         erro_city_num += 1
                                         with open(self.text_aaa + "big_liveinfos.txt", mode='a+',
                                                   encoding='utf-8') as f:
-                                            f.write(f'[{accucode} / {cityname}] - {i},{j}[日期不符合规范]\n')
+                                            f.write(f'[{accucode} / {cityname}] - {live_re_1},{live_date_1}[日期不符合规范]\n')
                                         flag1 = False
                                 if flag1 == False:
                                     break
@@ -94,12 +97,13 @@ class LiveInfos:
                                 try:
                                     time = data['data']['additionalLiveInfos'][x]['levelList'][y]['day']
                                 except BaseException:
-
+                                    live_re_1 = data['data']['additionalLiveInfos'][x]['name']
+                                    live_date_1 = data['data']['additionalLiveInfos'][x]['levelList'][y]['day']
                                     print(f"生活指数,日期有参数缺失问题，定位为：{accucode},节点为：{x}，{y}")
                                     # logger.info(f"生活指数,日期有参数缺失问题，定位为：{accucode},节点为：{x}，{y}")
                                     erro_city_num += 1
                                     with open(self.text_aaa + "big_liveinfos.txt", mode='a+', encoding='utf-8') as f:
-                                        f.write(f'[{accucode} / {cityname}] - {x},{y}[日期的参数不存在]\n')
+                                        f.write(f'[{accucode} / {cityname}] - {live_re_1},{live_date_1}[日期的参数不存在]\n')
                                     flag2 = False
                                 else:
                                     now = datetime.datetime.now()
@@ -109,13 +113,14 @@ class LiveInfos:
                                         num += 1
                                     else:
                                         num += 1
-
+                                        live_re_1 = data['data']['additionalLiveInfos'][x]['name']
+                                        live_date_1 = data['data']['additionalLiveInfos'][x]['levelList'][y]['day']
                                         print(f"生活指数,日期有问题，定位为：{accucode},节点为：{x}，{y}")
                                         # logger.info(f"生活指数,日期有问题，定位为：{accucode},节点为：{x}，{y}")
                                         erro_city_num += 1
                                         with open(self.text_aaa + "big_liveinfos.txt", mode='a+',
                                                   encoding='utf-8') as f:
-                                            f.write(f'[{accucode} / {cityname}] - {x},{y}[日期不符合规范]\n')
+                                            f.write(f'[{accucode} / {cityname}] - {live_re_1},{live_date_1}[日期不符合规范]\n')
                                         flag2 = False
                                 if flag2 == False:
                                     break

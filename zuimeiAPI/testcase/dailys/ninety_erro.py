@@ -24,13 +24,13 @@ def ninety_erro_case(data, timeout, code, re):
     else:
         # 判断是否 91 天
         days = len(data['dailys']['dailyweathers'])
-        if days == 91:
+        if days == 92:
             pass
         else:
-            print(f'91天-实际返回天数-[{days}]\n')
+            print(f'92天-实际返回天数-[{days}]\n')
             # logger.info(
             #     f'90天数据返回天数不正确，实际返回天数为{days}，定位为：{accucode}')
-            nine_erro_t2 = f'{days}[返回天数91]'
+            nine_erro_t2 = f'{days}[返回天数92]'
             # with open(self.text_aaa + "ninety_erro.txt", mode='a+', encoding='utf-8') as f:
             #     f.write(f'[{accucode} / {cityname}] - 实际返回天数-[{days}]\n')
     if timeout == 2:
