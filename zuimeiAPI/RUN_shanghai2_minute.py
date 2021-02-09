@@ -75,7 +75,7 @@ def run_minute_geo():
     nine_str = '九点'
     send_time = 5
     while True:
-        geo_r = geo.min_geo_to_name('121.447935', '37.463822', '烟台市')
+        geo_r = geo.min_geo_to_name('108.940175', '34.341568', '西安市')
         if nine_time == 1:
             email.min_geo_send_email(nine_str, path=text_Path_shanghai())
             min_re_file_search_big_geo(path=text_Path_shanghai())
