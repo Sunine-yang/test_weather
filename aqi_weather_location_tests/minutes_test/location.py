@@ -10,9 +10,10 @@ from tools.test_html import Test_mail
 
 
 class Location_Minutes:
-    def __init__(self,service):
+    def __init__(self,service,path_file):
         self.services = service
-        self.result_check = Result_check('location')
+        self.path_file = path_file
+        self.result_check = Result_check(self.path_file)
         self.yaml=ReadYaml.read_yaml(self.services)[self.services]
         self.num=0
     def get_location(self):
@@ -73,7 +74,7 @@ class Location_Minutes:
             else:
                 self.num+=1
                 self.result_check.all_wait_data()
-                Test_mail("[vivo]-[%s]-[API]-[定位]-[第%d次]" %(name,self.num) , 'location').smtp_on()
+                Test_mail("[vivo]-[%s]-[API]-[定位]-[第%d次]" %(name,self.num) ,self.path_file).smtp_on()
                 Data_analysis.data_delete('location')
                 self.result_check.list_data.clear()
         elif self.num > 4:
@@ -86,8 +87,8 @@ class Location_Minutes:
                     self.result_check.list_data.append('***********************')
                     self.get_location()
                     self.result_check.all_wait_data()
-            Test_mail("[vivo]-[%s]-[API]-[定位]-[第%d次]" %(name,self.num) , 'location').smtp_on()
-            Data_analysis.data_delete('location')
+            Test_mail("[vivo]-[%s]-[API]-[定位]-[第%d次]" %(name,self.num) ,self.path_file).smtp_on()
+            Data_analysis.data_delete(self.path_file)
             self.result_check.list_data.clear()
         elif self.num >= 1 and self.num <= 4:
             if self.result_check.list_data == []:
@@ -95,11 +96,11 @@ class Location_Minutes:
             else:
                 self.num += 1
                 self.result_check.all_wait_data()
-                Test_mail("[vivo]-[%s]-[API]-[定位]-[第%d次]" %(name,self.num) , 'location').smtp_on()
-                Data_analysis.data_delete('location')
+                Test_mail("[vivo]-[%s]-[API]-[定位]-[第%d次]" %(name,self.num) , self.path_file).smtp_on()
+                Data_analysis.data_delete(self.path_file)
                 self.result_check.list_data.clear()
 
 
 
 if __name__ == '__main__':
-    Location_Minutes('guangzhou').location_start('广州')
+    Location_Minutes('guangzhou','guangzhou_location').location_start('广州')

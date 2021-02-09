@@ -13,19 +13,12 @@ from tools.html_report_my import Test_mail
 class Test_start:
 
     def vivo_api(self):
-        for i in range(300):
-            print(i)
-            Large_Particles('guangzhou').large_particles_start(int("%s" %i + '0000'), '广州')
-
-
-
-
-        # try:
-        #     for i in range(300):
-        #         Large_Particles('guangzhou_150million_url').large_particles_start(eval("%s"%i+'0000'),eval("%s"%(i+1)+'0000'),'广州')
-        # except Exception as e:
-        #     print('运行出错')
-        #     Test_mail(str(e)).smtp_on()
+        try:
+            for i in range(300):
+                print(i)
+                Large_Particles('guangzhou').large_particles_start(i, '广州')
+        except Exception as e:
+            Test_mail('广州300万站点检测 |：%s'%e).smtp_on()
 
 
     def time_info(self):

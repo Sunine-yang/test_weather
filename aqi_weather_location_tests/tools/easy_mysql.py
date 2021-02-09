@@ -81,7 +81,6 @@ class EasyMysql:
 
 
 if __name__ == '__main__':
-
-    a=EasyMysql('guangzhou').query_all("SELECT * FROM xy_w2_city_crawl_china_list  WHERE cityCode in"
-                                       " (SELECT city_id from xy_w2_pm25 where isvalid='1')")
+    data=0
+    a=EasyMysql('guangzhou').query_all("SELECT * FROM `xy_w2_city_relation_search_huawei` WHERE language_code = 'zh-cn' AND country_id != 'CN' LIMIT %d0000,10000"%data)
     print(a)

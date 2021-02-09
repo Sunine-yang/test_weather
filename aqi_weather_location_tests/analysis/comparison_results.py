@@ -78,12 +78,13 @@ class Result_check:
 
     def time_check(self,*data):
         try:
-            if data[0]==data[1] or  data[0]==data[1]-1 :
+            if int(data[0])==int(data[1]) or int(data[0]-1)==int(data[1]):
                 return ''
+
             else:
                 return data[-1]%(data[0],data[1])
-        except:
-            pass
+        except Exception as e:
+            print(e)
 
     def all_wait_data(self):
 

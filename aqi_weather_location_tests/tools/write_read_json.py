@@ -14,7 +14,7 @@ class Write_Read_Json:
     @classmethod
     def read_json(cls,*data):
         with open(Path_data.get_path() + '/test_data/%s.json'%data[0] , 'r') as f:
-            load_dict = json.load(f)
+            load_dict = json.load(f, strict=False)
             return load_dict
 
 

@@ -15,9 +15,10 @@ from tools.read_yaml import ReadYaml
 from tools.test_html import Test_mail
 from tools.write_read_json import Write_Read_Json
 class Aqi_Minutes:
-    def __init__(self,service):
+    def __init__(self,service,path_file):
         self.service = service
-        self.result_check = Result_check('aqi_weather')
+        self.path_file=path_file
+        self.result_check = Result_check(self.path_file)
         self.baseURL=ReadYaml.read_yaml(self.service)[self.service]
         self.json=Write_Read_Json
         self.num=0
@@ -68,8 +69,8 @@ class Aqi_Minutes:
                 self.num += 1
                 self.aqi_weather()
                 self.result_check.all_wait_data()
-                Test_mail("[vivo]-[%s]-[API]-[空气质量排行榜]-[第%d次]" % (name,self.num), 'aqi_weather').smtp_on()
-                Data_analysis.data_delete('aqi_weather')
+                Test_mail("[vivo]-[%s]-[API]-[空气质量排行榜]-[第%d次]" % (name,self.num),self.path_file).smtp_on()
+                Data_analysis.data_delete(self.path_file)
                 self.result_check.list_data.clear()
         elif self.num>4:
             for i in range(5):
@@ -81,7 +82,8 @@ class Aqi_Minutes:
                     self.result_check.list_data.append('***********************')
                     self.aqi_weather()
                     self.result_check.all_wait_data()
-            Test_mail("[vivo]-[%s]-[API]-[空气质量排行榜]-[第%d次]" % (name,self.num), 'aqi_weather').smtp_on()
+            Test_mail("[vivo]-[%s]-[API]-[空气质量排行榜]-[第%d次]" % (name,self.num), self.path_file).smtp_on()
+
             Data_analysis.data_delete('aqi_weather')
             self.result_check.list_data.clear()
         elif  self.num>=1 and self.num<=4:
@@ -91,12 +93,12 @@ class Aqi_Minutes:
                 self.num+=1
                 self.aqi_weather()
                 self.result_check.all_wait_data()
-                Test_mail("[vivo]-[%s]-[API]-[空气质量排行榜]-[第%d次]" % (name,self.num) , 'aqi_weather').smtp_on()
-                Data_analysis.data_delete('aqi_weather')
+                Test_mail("[vivo]-[%s]-[API]-[空气质量排行榜]-[第%d次]" % (name,self.num) , self.path_file).smtp_on()
+                Data_analysis.data_delete(self.path_file)
                 self.result_check.list_data.clear()
 
 
 
 
 if __name__ == '__main__':
-    Aqi_Minutes('guangzhou').api_start('广州')
+    Aqi_Minutes('guangzhou','guangzhou_aqi').api_start('广州')

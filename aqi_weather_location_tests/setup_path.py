@@ -17,3 +17,6 @@ class Setup_Istall:
             print("Successful")
         except:
             print("Failed Somehow")
+
+if __name__ == '__main__':
+    Setup_Istall.set_up_install()

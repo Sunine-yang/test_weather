@@ -15,13 +15,14 @@ def threading_start():
     service='guangzhou'
     while True:
         try:
-            threads = [threading.Thread(target=Aqi_Minutes(service).api_start('广州')),
-                       threading.Thread(target=Location_Minutes(service).location_start('广州')),
-                       threading.Thread(target=Typhoon_Minutes(service).typhoon_start('广州'))]
+            threads = [threading.Thread(target=Aqi_Minutes(service,'%s_aqi'%service).api_start('广州')),
+                       threading.Thread(target=Location_Minutes(service,'%s_location'%service).location_start('广州')),
+                       threading.Thread(target=Typhoon_Minutes(service,'%s_typhoon'%service).typhoon_start('广州'))]
             for t in threads:
                 # 启动线程
                 t.start()
-
         except Exception as e:
-            Test_mail(str(e)).smtp_on()
+            Test_mail('guangzhou_minutes'+str(e)).smtp_on()
+        time.sleep(60)
+
 threading_start()

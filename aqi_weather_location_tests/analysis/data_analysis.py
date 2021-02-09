@@ -1,10 +1,10 @@
 #-*-coding:GBK -*-
 import os
-import time,datetime
-
+import sys,time
+curPath = os.path.abspath(os.path.dirname(__file__))
+rootPath = os.path.split(curPath)[0]
+sys.path.append(rootPath)
 from path_data import Path_data
-
-
 class Data_analysis:
 
     @classmethod
@@ -145,6 +145,9 @@ class Data_analysis:
         time_data=int(str(int(time.time()))+'000')-604957000
         return time_data
 if __name__ == '__main__':
-  print(Data_analysis.aqi_time())
+    pass
+    # print(Data_analysis.time_disposes('2020-08-09 02'))
+    # print(Data_analysis.hour_time_handle())
+
 
 
