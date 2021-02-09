@@ -28,8 +28,8 @@ def run_minute_big():
     nine_str = '九点'
     send_time = 5
     while True:
-        big_r = big.min_code_to_name('2332508', '长汀县')
-        live_r = live.min_liveInfos_api('106566', '西安市')
+        big_r = big.min_code_to_name('60970', '广元市')
+        live_r = live.min_liveInfos_api('59565', '高邮市')
         if nine_time == 1:
             email.min_big_send_email(nine_str, path=text_Path_shanghai())
             min_re_file_search_big(path=text_Path_shanghai())
@@ -75,7 +75,7 @@ def run_minute_geo():
     nine_str = '九点'
     send_time = 5
     while True:
-        geo_r = geo.min_geo_to_name('130.318917', '46.799923', '佳木斯市')
+        geo_r = geo.min_geo_to_name('121.447935', '37.463822', '烟台市')
         if nine_time == 1:
             email.min_geo_send_email(nine_str, path=text_Path_shanghai())
             min_re_file_search_big_geo(path=text_Path_shanghai())
@@ -120,7 +120,7 @@ def run_minute_nine():
     nine_str = '九点'
     send_time = 5
     while True:
-        nin_r = nin.min_dailys_api('106566', '西安市')
+        nin_r = nin.min_dailys_api('61488', '玉溪市')
         if nine_time == 1:
             email.min_ninety_send_email(nine_str, path=text_Path_shanghai())
             min_re_file_ninety(path=text_Path_shanghai())
