@@ -65,7 +65,7 @@ class LiveInfos:
                                     # logger.info(f"生活指数,日期有参数缺失问题，定位为：{accucode},节点为：{i}，{j}")
                                     erro_city_num += 1
                                     with open(self.text_aaa + "big_liveinfos.txt", mode='a+', encoding='utf-8') as f:
-                                        f.write(f'[{accucode} / {cityname}] - {live_re_1},{live_date_1}[日期的参数不存在]\n')
+                                        f.write(f'[{accucode} / {cityname}] - {live_re_1},{j}-{live_date_1}[日期的参数不存在]\n')
                                     flag1 = False
                                 else:
                                     now = datetime.datetime.now()
@@ -82,7 +82,7 @@ class LiveInfos:
                                         erro_city_num += 1
                                         with open(self.text_aaa + "big_liveinfos.txt", mode='a+',
                                                   encoding='utf-8') as f:
-                                            f.write(f'[{accucode} / {cityname}] - {live_re_1},{live_date_1}[日期不符合规范]\n')
+                                            f.write(f'[{accucode} / {cityname}] - {live_re_1},{j}-{live_date_1}[日期不符合规范]\n')
                                         flag1 = False
                                 if flag1 == False:
                                     break
@@ -103,7 +103,7 @@ class LiveInfos:
                                     # logger.info(f"生活指数,日期有参数缺失问题，定位为：{accucode},节点为：{x}，{y}")
                                     erro_city_num += 1
                                     with open(self.text_aaa + "big_liveinfos.txt", mode='a+', encoding='utf-8') as f:
-                                        f.write(f'[{accucode} / {cityname}] - {live_re_1},{live_date_1}[日期的参数不存在]\n')
+                                        f.write(f'[{accucode} / {cityname}] - {live_re_1},{y}-{live_date_1}[日期的参数不存在]\n')
                                     flag2 = False
                                 else:
                                     now = datetime.datetime.now()
@@ -120,7 +120,7 @@ class LiveInfos:
                                         erro_city_num += 1
                                         with open(self.text_aaa + "big_liveinfos.txt", mode='a+',
                                                   encoding='utf-8') as f:
-                                            f.write(f'[{accucode} / {cityname}] - {live_re_1},{live_date_1}[日期不符合规范]\n')
+                                            f.write(f'[{accucode} / {cityname}] - {live_re_1},{y}-{live_date_1}[日期不符合规范]\n')
                                         flag2 = False
                                 if flag2 == False:
                                     break

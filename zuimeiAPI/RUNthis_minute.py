@@ -28,7 +28,7 @@ def run_minute_big():
     send_time = 5
     while True:
         big_r = big.min_code_to_name('57465', '海淀区')
-        live_r = live.min_liveInfos_api('106566', '西安市')
+        live_r = live.min_liveInfos_api('2333389', '未央区')
         if nine_time == 1:
             email.min_big_send_email(nine_str)
             min_re_file_search_big()

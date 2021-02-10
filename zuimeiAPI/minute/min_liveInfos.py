@@ -71,7 +71,7 @@ class MinLiveInfos:
                             print(f"生活指数,日期有参数缺失问题，定位为：{accucode},节点为：{i}，{j}")
                             # logger.info(f"生活指数,日期有参数缺失问题，定位为：{accucode},节点为：{i}，{j}")
                             with open(self.text_aaa + "min_big_liveinfos.txt", mode='a+', encoding='utf-8') as f:
-                                f.write(f'[{accucode} / {cityname}] - {live_re_1},{live_date_1}[日期的参数不存在]\n')
+                                f.write(f'[{accucode} / {cityname}] - {live_re_1},{j}-{live_date_1}[日期的参数不存在]\n')
 
                         else:
                             now = datetime.datetime.now()
@@ -87,7 +87,7 @@ class MinLiveInfos:
                                 print(f"生活指数-日期错误-节点-[{i},{j}]-定位-[{accucode}]")
                                 # logger.info(f"生活指数,日期有问题，定位为：{accucode},节点为：{i}，{j}")
                                 with open(self.text_aaa + "min_big_liveinfos.txt", mode='a+', encoding='utf-8') as f:
-                                    f.write(f'[{accucode} / {cityname}] - {live_re_1},{live_date_1}[日期不符合规范]\n')
+                                    f.write(f'[{accucode} / {cityname}] - {live_re_1},{j}-{live_date_1}[日期不符合规范]\n')
 
             else:
                 for x in range(0, 23):
@@ -102,7 +102,7 @@ class MinLiveInfos:
                             print(f"生活指数,日期有参数缺失问题，定位为：{accucode},节点为：{x}，{y}")
                             # logger.info(f"生活指数,日期有参数缺失问题，定位为：{accucode},节点为：{x}，{y}")
                             with open(self.text_aaa + "min_big_liveinfos.txt", mode='a+', encoding='utf-8') as f:
-                                f.write(f'[{accucode} / {cityname}] - {live_re_1},{live_date_1}[日期的参数不存在]\n')
+                                f.write(f'[{accucode} / {cityname}] - {live_re_1},{y}-{live_date_1}[日期的参数不存在]\n')
                         else:
                             now = datetime.datetime.now()
                             day1 = now + datetime.timedelta(days=num)
@@ -117,7 +117,7 @@ class MinLiveInfos:
                                 print(f"生活指数,日期有问题，定位为：{accucode},节点为：{x}，{y}")
                                 # logger.info(f"生活指数,日期有问题，定位为：{accucode},节点为：{x}，{y}")
                                 with open(self.text_aaa + "min_big_liveinfos.txt", mode='a+', encoding='utf-8') as f:
-                                    f.write(f'[{accucode} / {cityname}] - {live_re_1},{live_date_1}[日期不符合规范]\n')
+                                    f.write(f'[{accucode} / {cityname}] - {live_re_1},{y}-{live_date_1}[日期不符合规范]\n')
 
             # 判断参数不为空
             live_list = ConfRead.conf_get('live.conf', 'live_list', 'live_list')
