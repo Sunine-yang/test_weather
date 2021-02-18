@@ -11,15 +11,16 @@ from analysis.comparison_results import Result_check
 from tools.test_html import Test_mail
 from analysis.data_analysis import Data_analysis
 from tools.write_data_txt import Write_Data_txt
-
+from tools.logger import Logger
 
 class Test_Location:
     def __init__(self,services):
         self.services = services
-        self.result_check=Result_check('Fixed_latitude_longitude')
+        self.path_name=services+'_Fixed_latitude_longitude'
+        self.result_check=Result_check(self.path_name)
         self.read_yaml=ReadYaml.read_yaml(self.services)[self.services]
         self.txt=Write_Data_txt
-
+        self.logger = Logger.report_logger()
     def get_location(self):
         global sql_info
         print('location  start...........................')
@@ -55,6 +56,7 @@ class Test_Location:
                 else:
                     print(sql_info+'| 测试通过')
             except Exception as e:
+                self.logger.error('get_location:'+str(e))
                 self.result_check.list_data.append('%s,%s,%s,%s |' % (txt_data[i][0],txt_data[i][1], txt_data[i][5], txt_data[i][6])+'| %s 不存在'%str(e))
 
 
@@ -62,11 +64,12 @@ class Test_Location:
         self.get_location()
         self.result_check.wait_data_log('定位经纬度 错误数：%d' % (len(self.result_check.list_data)))
         self.result_check.all_wait_data()
-        if Data_analysis.document_check('Fixed_latitude_longitude') == None:
+        if Data_analysis.document_check(self.path_name) == None:
             pass
         else:
-            Test_mail("[vivo]-[%s]-[数据]-[定位经纬度]-[%d]" % (name,(len(self.result_check.list_data))), 'Fixed_latitude_longitude').smtp_on()
-            Data_analysis.data_delete('Fixed_latitude_longitude')
+            Test_mail("[vivo]-[%s]-[数据]-[定位经纬度]-[%d]" % (name,(len(self.result_check.list_data))), self.path_name).smtp_on()
+            Data_analysis.data_delete(self.path_name)
+        print(self.result_check.list_data)
         self.result_check.list_data.clear()
 
 

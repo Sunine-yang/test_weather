@@ -12,13 +12,16 @@ from tools.test_html import Test_mail
 from analysis.data_analysis import Data_analysis
 from tools.write_read_json import Write_Read_Json
 from tools.write_data_txt import Write_Data_txt
+from tools.logger import Logger
 class Test_weather_api:
     def __init__(self,service):
         self.txt=Write_Data_txt
         self.json=Write_Read_Json
         self.service=service
         self.baseURL = ReadYaml().read_yaml(self.service)[self.service]
-        self.result_check=Result_check('Air_Quality_Ranking')
+        self.path_name = service + '_Air_Quality_Ranking'
+        self.result_check=Result_check(self.path_name)
+        self.logger = Logger.report_logger()
     def url_data_exist_check(self,sql_data_all,url_data):
         for i in range(0,len(sql_data_all)):
             if str(sql_data_all[i][2]) in str(url_data["data"]):
@@ -70,8 +73,8 @@ class Test_weather_api:
                             pass
 
                 except Exception as e:
-                        self.result_check.list_data.append(result+'| %s 不存在'%e)
-
+                    self.result_check.list_data.append(result+'| %s 不存在'%e)
+                    self.logger.error('get_city_code:' + str(e))
 
 
     def test_aqi_level(self, url_data):
@@ -94,11 +97,12 @@ class Test_weather_api:
         self.get_city_code()
         self.result_check.wait_data_log('空气排行榜 错误数：%d'%(len(self.result_check.list_data)))
         self.result_check.all_wait_data()
-        if Data_analysis.document_check('Air_Quality_Ranking')==None:
+        if Data_analysis.document_check(self.path_name)==None:
             pass
         else:
-            Test_mail("[vivo]-[%s]-[数据]-[空气排行榜]-[%d]"%(name,(len(self.result_check.list_data))), 'Air_Quality_Ranking').smtp_on()
-            Data_analysis.data_delete('Air_Quality_Ranking')
+            Test_mail("[vivo]-[%s]-[数据]-[空气排行榜]-[%d]"%(name,(len(self.result_check.list_data))), self.path_name).smtp_on()
+            Data_analysis.data_delete(self.path_name)
+        print(self.result_check.list_data)
         self.result_check.list_data.clear()
 
 

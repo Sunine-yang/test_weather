@@ -4,7 +4,7 @@ guangzhou:
   location_url: "http://139.159.198.98/vivoDbServer/locationgeo?apikey=0710d94cebb4248a38edef859d11ab35&longitude=%f&latitude=%f&locationSystem=GCJ02&language=zh-cn"
   location_sql: "SELECT accuCode,cityName,province,country,timeZone,geoLong,geoLat FROM xy_w2_city_crawl_china_list a WHERE citycode COLLATE utf8mb4_general_ci IN (SELECT area_code FROM `mingzhenbu_city`) AND citycode != parentcode"
   atmosphere_track: "http://typhoon.nmc.cn/weatherservice/typhoon/jsons/view_%s"
-  atmosphere_list: "http://typhoon.nmc.cn/weatherservice/typhoon/jsons/list_default?t=1610502450124&callback=typhoon_jsons_list_default"
+  atmosphere_list: "http://typhoon.nmc.cn/weatherservice/typhoon/jsons/list_%s"
   typhoon_list_sql: "select * from typhoon_list"
   typhoon_track_sql: "select * from typhoon_track where typhoon_name_en = '%s' and t2 ='00' ORDER BY t1"
   typhoon_track_url: "http://139.159.198.98/pubDataServer/gettyphoon?apikey=0710d94cebb4248a38edef859d11ab35&typhoonid=%s"

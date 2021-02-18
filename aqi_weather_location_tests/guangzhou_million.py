@@ -21,17 +21,6 @@ class Test_start:
             Test_mail('广州300万站点检测 |：%s'%e).smtp_on()
 
 
-    def time_info(self):
-        total_time = time.strftime("%H:%M:%S", time.localtime(float(time.time())))
-        ti = str(total_time)
-        h, m, s = ti.strip().split(':')
-        seconds = int(h) * 3600 + int(m) * 60 + int(s)
-        if seconds>32400 and seconds<54000:
-            result=54000-seconds
-            return result
-        elif seconds>54000 :
-            result=86400-seconds+32400
-            return result
 
 if __name__ == '__main__':
     Test_start().vivo_api()

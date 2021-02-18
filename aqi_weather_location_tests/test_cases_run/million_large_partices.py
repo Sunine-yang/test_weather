@@ -33,7 +33,7 @@ class Large_Particles:
                 city_check = self.city_check(get_url["data"]["city"], read_sql[i], sql_data)
                 condition_check = self.condition_check(get_url["data"]["condition"])
                 dailys_check = self.dailys_check(get_url["data"]["dailys"], sql_data)
-                hourlys_check = self.hourlys_check(get_url["data"]["hourlys"], sql_data)
+                hourlys_check = self.hourlys_check(get_url["data"]["hourlys"])
                 result = resultinfo + resultcode + servertime + data + condition_check + city_check + dailys_check + hourlys_check
                 if result == '':
                     print(sql_data+'| 检测通过')
@@ -221,7 +221,7 @@ class Large_Particles:
             return '| %s:%s 不存在'%(key,e)
 
     # 小时预报检验
-    def hourlys_check(self, get_url,sql_data):
+    def hourlys_check(self, get_url):
         datas = self.check.time_check(Data_analysis.hour_time_handle() , Data_analysis.hour_time_handle(get_url['hourlyweathers'][0]["date"])
             , '| hourlys:(%d / %d)')
         for h in range(len(get_url)):
@@ -277,3 +277,12 @@ class Large_Particles:
         self.check.list_data.clear()
 if __name__ == '__main__':
     Large_Particles('guangzhou').large_particles_start(0,'全国')
+    # Large_Particles().large_particles_start(10001,20000,'全国')
+    # Large_Particles().large_particles_start(20000,30000,'全国')
+    # Large_Particles().large_particles_start(30001,40000,'全国')
+    # Large_Particles().large_particles_start(40001,50000,'全国')
+    # Large_Particles().large_particles_start(50001,60000,'全国')
+    # Large_Particles().large_particles_start(60001,70000,'全国')
+    # Large_Particles().large_particles_start(70001,80000,'全国')
+    # Large_Particles().large_particles_start(80001,90000,'全国')
+    # Large_Particles().large_particles_start(90001,100000,'全国')

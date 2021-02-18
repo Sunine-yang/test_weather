@@ -1,6 +1,5 @@
 #-*-coding:GBK -*-
-import os
-import sys
+import sys,time,os
 curPath = os.path.abspath(os.path.dirname(__file__))
 rootPath = os.path.split(curPath)[0]
 sys.path.append(rootPath)
@@ -13,6 +12,7 @@ from tools.test_html import Test_mail
 from tools.write_read_json import Write_Read_Json
 from tools.write_data_txt import Write_Data_txt
 from test_cases_run.test_cn_typhoon import Test_CNTyphoon
+from analysis.url_data import Url_data
 class Typhoon_Minutes:
     def __init__(self,service,path_file):
         self.services = service
@@ -25,7 +25,7 @@ class Typhoon_Minutes:
     def weather_typhoon_list_check(self):
         global result
         print('typhoon  start...........................')
-        Test_CNTyphoon(self.services).test_typhoob_list_start()
+        Url_data(self.services).get_number_list()
         data_num=eval(self.txt.read_data('/aqi_data/typhoon_list'))
         url_list = TestAPI.get_location(self.read_ymal["typhoon_list_url"]).json()
         code = self.result_check.comparison_check(
@@ -109,39 +109,41 @@ class Typhoon_Minutes:
         return otherStyleTime
 
     def typhoon_start(self,name):
-        if self.num == 0:
-            self.weather_typhoon_list_check()
-            if self.result_check.list_data == []:
-                self.num = 0
-            else:
-                self.num += 1
+        while True:
+            time.sleep(60)
+            if self.num == 0:
                 self.weather_typhoon_list_check()
-                self.result_check.all_wait_data()
+                if self.result_check.list_data == []:
+                    self.num = 0
+                else:
+                    self.num += 1
+                    self.weather_typhoon_list_check()
+                    self.result_check.all_wait_data()
+                    Test_mail("[vivo]-[%s]-[API]-[台风]-[第%d次]" % (name,self.num), self.path_file).smtp_on()
+                    Data_analysis.data_delete(self.path_file)
+                    self.result_check.list_data.clear()
+            elif self.num > 4:
+                for i in range(5):
+                    if self.result_check.list_data == []:
+                        self.num = 0
+                        break
+                    else:
+                        self.num += 1
+                        self.result_check.list_data.append('***********************')
+                        self.weather_typhoon_list_check()
+                        self.result_check.all_wait_data()
                 Test_mail("[vivo]-[%s]-[API]-[台风]-[第%d次]" % (name,self.num), self.path_file).smtp_on()
                 Data_analysis.data_delete(self.path_file)
                 self.result_check.list_data.clear()
-        elif self.num > 4:
-            for i in range(5):
+            elif  self.num >= 1 and self.num <= 4:
                 if self.result_check.list_data == []:
                     self.num = 0
-                    break
                 else:
-                    self.num += 1
-                    self.result_check.list_data.append('***********************')
+                    self.num+=1
                     self.weather_typhoon_list_check()
                     self.result_check.all_wait_data()
-            Test_mail("[vivo]-[%s]-[API]-[台风]-[第%d次]" % (name,self.num), self.path_file).smtp_on()
-            Data_analysis.data_delete(self.path_file)
-            self.result_check.list_data.clear()
-        elif  self.num >= 1 and self.num <= 4:
-            if self.result_check.list_data == []:
-                self.num = 0
-            else:
-                self.num+=1
-                self.weather_typhoon_list_check()
-                self.result_check.all_wait_data()
-                Test_mail("[vivo]-[%s]-[API]-[台风]-[第%d次]" % (name,self.num) ,self.path_file).smtp_on()
-                Data_analysis.data_delete(self.path_file)
-                self.result_check.list_data.clear()
+                    Test_mail("[vivo]-[%s]-[API]-[台风]-[第%d次]" % (name,self.num) ,self.path_file).smtp_on()
+                    Data_analysis.data_delete(self.path_file)
+                    self.result_check.list_data.clear()
 if __name__ == '__main__':
     Typhoon_Minutes('guangzhou','typhoon').typhoon_start('广州')

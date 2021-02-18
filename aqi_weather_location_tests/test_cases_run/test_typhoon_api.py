@@ -11,18 +11,23 @@ from analysis.data_analysis import Data_analysis
 from tools.test_html import Test_mail
 from tools.write_read_json import Write_Read_Json
 from tools.write_data_txt import Write_Data_txt
+from analysis.url_data import Url_data
+from tools.logger import Logger
 class Test_Typhoon:
     def __init__(self,services):
         self.services = services
         self.json=Write_Read_Json
-        self.result_check=Result_check('typhoon_list_track')
+        self.path_name=services+'_typhoon_list_track'
+        self.result_check=Result_check(self.path_name)
         self.read_ymal=ReadYaml.read_yaml(self.services)[self.services]
         self.txt=Write_Data_txt
+        self.logger=Logger.report_logger()
     def weather_typhoon_list_check(self):
 
         global result
         result= '台风列表接口 |'
-        data_num=eval(self.txt.read_data('/aqi_data/typhoon_list'))
+        Url_data(self.services).get_number_list()
+        data_num=eval(self.txt.read_data('aqi_data/typhoon_list'))
         url_list = TestAPI.get_location(self.read_ymal['typhoon_list_url']).json()
         code=self.result_check.comparison_check(TestAPI.get_location(self.read_ymal['typhoon_list_url']).status_code,200,'| 状态码:(%s/%s)')
         ZtyphoonList=self.result_check.comparison_check(len(url_list),4,'| ZtyphoonList 字节长度:(%s/%s)')
@@ -49,6 +54,7 @@ class Test_Typhoon:
                 else:
                     print(result +url_list["data"]["typhoonList"][i]["nameZh"]+'| 检测正确')
             except Exception as e:
+                self.logger.error('weather_typhoon_list_check:'+str(e))
                 self.result_check.list_data.append(result + '| %s 不存在' % e)
 
     def test_weather_typhoon_check(self):
@@ -88,6 +94,7 @@ class Test_Typhoon:
                 else:
                     print('%s |'%url_report+'检查通过')
             except Exception as e:
+                self.logger.error('test_weather_typhoon_check:'+str(e))
                 self.result_check.list_data.append('%s |'%url_report + '| %s 不存在' % e)
 
     def typhoon_track_check(self,weather_url,sql_data):
@@ -111,6 +118,7 @@ class Test_Typhoon:
                 else:
                     print(url_report_time+'检查通过')
             except Exception as e:
+                self.logger.error('typhoon_track_check:'+str(e))
                 self.result_check.list_data.append(url_report_time+'| %s 不存在'%e)
 
 
@@ -122,11 +130,12 @@ class Test_Typhoon:
         self.test_weather_typhoon_check()
         self.result_check.wait_data_log('台风列表/详情 错误数：%d' % (len(self.result_check.list_data)-2))
         self.result_check.all_wait_data()
-        if Data_analysis.document_check('typhoon_list_track') == None:
+        if Data_analysis.document_check(self.path_name) == None:
             pass
         else:
-            Test_mail("[vivo]-[%s]-[数据]-[最美天气]-[台风列表/详情]-[%d]" % (name,(len(self.result_check.list_data)-2)), 'typhoon_list_track').smtp_on()
-            Data_analysis.data_delete('typhoon_list_track')
+            Test_mail("[vivo]-[%s]-[数据]-[最美天气]-[台风列表/详情]-[%d]" % (name,(len(self.result_check.list_data)-2)), self.path_name).smtp_on()
+            Data_analysis.data_delete(self.path_name)
+        print(self.result_check.list_data)
         self.result_check.list_data.clear()
 
 

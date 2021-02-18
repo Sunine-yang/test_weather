@@ -24,5 +24,5 @@ class Write_Data_txt:
             return eval(result)
 
 if __name__ == '__main__':
-    datas=Write_Data_txt.read_data_readline('sql_data/20000')
+    datas=Write_Data_txt.read_data_readline('aqi_data/typhoon_list')
     print(datas)

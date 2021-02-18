@@ -13,8 +13,9 @@ from test_cases_run.test_location_api import Test_Location
 from test_cases_run.test_weatheraqi import Test_weather_api
 from test_cases_run.test_cn_typhoon import Test_CNTyphoon
 from tools.html_report_my import Test_mail
+from analysis.data_analysis import Data_analysis
 class Test_start:
-
+    Data_analysis.delete_logs()
     services = 'shanghai'
     def vivo_api(self):
         try:
@@ -26,7 +27,7 @@ class Test_start:
 
         except Exception as e:
             print('‘À––¥ÌŒÛ')
-            Test_mail(str(e)).smtp_on()
+            Test_mail('shanghai:'+str(e)).smtp_on()
 
 
     def time_info(self):

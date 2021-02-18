@@ -11,14 +11,16 @@ from analysis.data_analysis import Data_analysis
 from tools.test_html import Test_mail
 from tools.write_read_json import Write_Read_Json
 from tools.write_data_txt import Write_Data_txt
+from tools.logger import Logger
 class Test_CNTyphoon:
     def __init__(self,services):
         self.services = services
         self.json=Write_Read_Json
-        self.result_check=Result_check('cn_typhoon_list_track')
+        self.path_name=services+'_cn_typhoon_list_track'
+        self.result_check=Result_check(self.path_name)
         self.read_ymal=ReadYaml.read_yaml(self.services)[self.services]
         self.txt=Write_Data_txt
-
+        self.logger=Logger.report_logger()
     def test_typhoob_list_start(self):
         print('typhoon_list  start...........................')
         Url_data(self.services).get_number_list()
@@ -30,8 +32,8 @@ class Test_CNTyphoon:
                 self.result_check.comparison_check(sql_num[i][3],data_num[i][2],'sql_data:%s  url_data:%s ')
                 self.result_check.comparison_check(sql_num[i][2],data_num[i][1],'sql_data:%s  url_data:%s ')
         except Exception as  e:
-            self.result_check.logger.warning(str(e))
-
+            self.result_check.list_data.append('test_typhoob_list_start'+str(e))
+            self.logger.error('test_typhoob_list_start'+str(e))
     def test_typhoon_track_time(self):
         global result_data
         data_num=eval(self.txt.read_data('aqi_data/typhoon_list'))
@@ -69,7 +71,8 @@ class Test_CNTyphoon:
                         else:
                             pass
                 except Exception as  e:
-                    print(e)
+                    self.result_check.list_data.append(result_data+str(e))
+                    self.logger.error('test_typhoon_track_time:'+str(e))
 
 
 
@@ -80,12 +83,13 @@ class Test_CNTyphoon:
         self.test_typhoon_track_time()
         self.result_check.wait_data_log('台风列表/详情 错误数：%d' % (len(self.result_check.list_data) - 2))
         self.result_check.all_wait_data()
-        if Data_analysis.document_check('cn_typhoon_list_track') == None:
+        if Data_analysis.document_check(self.path_name) == None:
             pass
         else:
             Test_mail("[vivo]-[%s]-[数据]-[中国气象]-[台风列表/详情]-[%d]" % (name, (len(self.result_check.list_data) - 2)),
-                      'cn_typhoon_list_track').smtp_on()
-            Data_analysis.data_delete('cn_typhoon_list_track')
+                      self.path_name).smtp_on()
+            Data_analysis.data_delete(self.path_name)
+        print(self.result_check.list_data)
         self.result_check.list_data.clear()
 
 

@@ -23,8 +23,7 @@ class Result_check:
             if data[0] in data[1] or data[1] in data[0]:
                 return ''
             else:
-
-                return data[-1]%(data[0])
+                return data[-1]%(data[0],data[1])
 
         except Exception as e:
             self.logger.warning(e)
@@ -78,9 +77,12 @@ class Result_check:
 
     def time_check(self,*data):
         try:
-            if int(data[0])==int(data[1]) or int(data[0]-1)==int(data[1]):
+            if int(data[0])==int(data[1])  :
                 return ''
-
+            elif int(data[0]-1)==int(data[1]):
+                return ''
+            elif int(data[0])==int(data[1]):
+                return ''
             else:
                 return data[-1]%(data[0],data[1])
         except Exception as e:

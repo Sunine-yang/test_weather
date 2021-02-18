@@ -62,18 +62,10 @@ class Data_analysis:
         timeStamp = float(data / 1000)
         timeArray = time.localtime(timeStamp)
         otherStyleTime = time.strftime("%Y-%m-%d %H", timeArray)
+
         return otherStyleTime
 
-    @classmethod
-    def data_delete(cls,document):
-        Path_data.get_path()
-        path = os.listdir(Path_data.get_path()+"/test_data/test_log_report")
-        for i in range(len(path)):
-            if '%s.txt'%document == path[i]:
-                os.unlink(Path_data.get_path()+"/test_data/test_log_report/%s.txt" % document)
-                break
-            else:
-                pass
+
     @classmethod
     def document_check(cls, document):
         Path_data.get_path()
@@ -144,10 +136,37 @@ class Data_analysis:
     def aqi_time(cls):
         time_data=int(str(int(time.time()))+'000')-604957000
         return time_data
-if __name__ == '__main__':
-    pass
-    # print(Data_analysis.time_disposes('2020-08-09 02'))
-    # print(Data_analysis.hour_time_handle())
 
+    @classmethod
+    def data_delete(cls, document):
+        Path_data.get_path()
+        path = os.listdir(Path_data.get_path() + "/test_data/test_log_report")
+        for i in range(len(path)):
+            if '%s.txt' % document == path[i]:
+                os.unlink(Path_data.get_path() + "/test_data/test_log_report/%s.txt" % document)
+                break
+            else:
+                pass
+    @classmethod
+    def delete_logs(cls):
+        Path_data.get_path()
+        path = os.listdir(Path_data.get_path() + "\logs")
+        for i in range(len(path)):
+            if cls.file_data(path[i]) == int(cls.days_time_handle()):
+                pass
+            elif cls.file_data(path[i]) == int(cls.days_time_handle())-1:
+                pass
+            elif cls.file_data(path[i]) in [28,29,31,30] and int(cls.days_time_handle())==1:
+                pass
+            else:
+                os.unlink(Path_data.get_path()(path[i]) + "/logs/%s"%path[i])
+        print('清除日志完成，只保留近2两天日志信息')
+
+    @classmethod
+    def file_data(cls,data):
+        result=data.split('_')
+        return int(result[2])
+if __name__ == '__main__':
+    Data_analysis.delete_logs()
 
 
