@@ -150,7 +150,7 @@ class Data_analysis:
     @classmethod
     def delete_logs(cls):
         Path_data.get_path()
-        path = os.listdir(Path_data.get_path() + "\logs")
+        path = os.listdir(Path_data.get_path() + "/logs")
         for i in range(len(path)):
             if cls.file_data(path[i]) == int(cls.days_time_handle()):
                 pass
