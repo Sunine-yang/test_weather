@@ -73,7 +73,6 @@ class Location_Minutes:
 
     def location_start(self,name):
         while True:
-            time.sleep(60)
             self.get_location()
             if self.num == 0:
                 if self.result_check.list_data == []:
@@ -94,6 +93,7 @@ class Location_Minutes:
                         self.result_check.list_data.append('***********************')
                         self.get_location()
                         self.result_check.all_wait_data()
+                    time.sleep(60)
                 Test_mail("[vivo]-[%s]-[API]-[定位]-[第%d次]" %(name,self.num) ,self.path_file).smtp_on()
                 Data_analysis.data_delete(self.path_file)
                 self.result_check.list_data.clear()
@@ -106,7 +106,7 @@ class Location_Minutes:
                     Test_mail("[vivo]-[%s]-[API]-[定位]-[第%d次]" %(name,self.num) , self.path_file).smtp_on()
                     Data_analysis.data_delete(self.path_file)
                     self.result_check.list_data.clear()
-
+            time.sleep(60)
 
 
 if __name__ == '__main__':

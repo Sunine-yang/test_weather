@@ -159,7 +159,7 @@ class Data_analysis:
             elif cls.file_data(path[i]) in [28,29,31,30] and int(cls.days_time_handle())==1:
                 pass
             else:
-                os.unlink(Path_data.get_path()(path[i]) + "/logs/%s"%path[i])
+                os.unlink(Path_data.get_path()+ "/logs/%s"%path[i])
         print('清除日志完成，只保留近2两天日志信息')
 
     @classmethod

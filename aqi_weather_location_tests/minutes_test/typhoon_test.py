@@ -11,7 +11,6 @@ from tools.read_yaml import ReadYaml
 from tools.test_html import Test_mail
 from tools.write_read_json import Write_Read_Json
 from tools.write_data_txt import Write_Data_txt
-from test_cases_run.test_cn_typhoon import Test_CNTyphoon
 from analysis.url_data import Url_data
 class Typhoon_Minutes:
     def __init__(self,service,path_file):
@@ -75,32 +74,36 @@ class Typhoon_Minutes:
         source = self.result_check.comparison_none_check(weather_url["data"]["source"],'| source:(%s)')
         startTime = self.result_check.comparison_none_check(weather_url["data"]["startTime"],'| startTime:(%s)')
         sustainedTime = self.result_check.comparison_none_check(weather_url["data"]["sustainedTime"],'| sustainedTime:(%s)')
-        self.typhoon_track_check(weather_url, sql_data)
-        typhoon_result = number + time_c + total_len + data + resultcode + resultinfo + endTime + source + startTime + sustainedTime
+        track_check=self.typhoon_track_check(weather_url, sql_data)
+        typhoon_result = number + time_c + total_len + data + resultcode + resultinfo + endTime + source + startTime + sustainedTime+track_check
         if typhoon_result != '':
             self.result_check.list_data.append('%s |' % url_report + typhoon_result)
         else:
             print(url_report +'| 检验通过')
 
     def typhoon_track_check(self, weather_url, sql_data):
+        global url_report_time
         for a in range(len(weather_url["data"]["track"])):
-            url_report_time = url_report + sql_data[a][5]
-            track = self.result_check.comparison_check(len(weather_url["data"]["track"][a]), 6,'| track 字段长度:(%s/%s)')
-            centralPressure = self.result_check.comparison_check(  sql_data[a][11],weather_url["data"]["track"][a]["centralPressure"],
-                '| centralPressure:(%s/%s)')
-            latitude = self.result_check.comparison_check(sql_data[a][8],weather_url["data"]["track"][a]["latitude"],'| latitude:(%s/%s)')
-            level = self.result_check.comparison_check(sql_data[a][9],weather_url["data"]["track"][a]["level"], '| level:(%s/%s)')
-            longitude = self.result_check.comparison_check(sql_data[a][7],weather_url["data"]["track"][a]["longitude"],'| longitude:(%s/%s)')
-            windSpeed = self.result_check.comparison_check(sql_data[a][10],weather_url["data"]["track"][a]["windSpeed"],'| windSpeed speed:(%s/%s)')
-            time_d = self.result_check.comparison_check(sql_data[a][5],self.time_transform(weather_url["data"]["track"][a]["time"]), '| time:(%s/%s)')
-            typhoonId = self.result_check.comparison_check(sql_data[a][1],weather_url["data"]["typhoonId"],' | typhoonId:(%s/%s)')
-            typhoonNameEn = self.result_check.comparison_check(sql_data[a][2],weather_url["data"]["typhoonNameEn"],'| typhoonNameEn:(%s/%s)')
-            typhoonNameZh = self.result_check.comparison_check(sql_data[a][3],weather_url["data"]["typhoonNameZh"],'| typhoonNameZh:(%s/%s)')
-            typhoon_track = track + centralPressure + latitude + level + longitude + windSpeed + time_d + typhoonId + typhoonNameEn + typhoonNameZh
-            if typhoon_track != '':
-                self.result_check.list_data.append('%s |' % url_report_time + typhoon_track)
-            else:
-                print(url_report_time + ' 检查通过')
+            try:
+                url_report_time =sql_data[a][5]
+                track = self.result_check.comparison_check(len(weather_url["data"]["track"][a]), 6,'| track 字段长度:(%s/%s)')
+                centralPressure = self.result_check.comparison_check(sql_data[a][11],weather_url["data"]["track"][a]["centralPressure"],
+                    '| centralPressure:(%s/%s)')
+                latitude = self.result_check.comparison_check(sql_data[a][8],weather_url["data"]["track"][a]["latitude"],'| latitude:(%s/%s)')
+                level = self.result_check.comparison_check(sql_data[a][9],weather_url["data"]["track"][a]["level"], '| level:(%s/%s)')
+                longitude = self.result_check.comparison_check(sql_data[a][7],weather_url["data"]["track"][a]["longitude"],'| longitude:(%s/%s)')
+                windSpeed = self.result_check.comparison_check(sql_data[a][10],weather_url["data"]["track"][a]["windSpeed"],'| windSpeed speed:(%s/%s)')
+                time_d = self.result_check.comparison_check(sql_data[a][5],self.time_transform(weather_url["data"]["track"][a]["time"]), '| time:(%s/%s)')
+                typhoonId = self.result_check.comparison_check(sql_data[a][1],weather_url["data"]["typhoonId"],' | typhoonId:(%s/%s)')
+                typhoonNameEn = self.result_check.comparison_check(sql_data[a][2],weather_url["data"]["typhoonNameEn"],'| typhoonNameEn:(%s/%s)')
+                typhoonNameZh = self.result_check.comparison_check(sql_data[a][3],weather_url["data"]["typhoonNameZh"],'| typhoonNameZh:(%s/%s)')
+                typhoon_track = track + centralPressure + latitude + level + longitude + windSpeed + time_d + typhoonId + typhoonNameEn + typhoonNameZh
+                if typhoon_track != '':
+                    return url_report_time + typhoon_track
+                else:
+                    return ''
+            except Exception as e:
+                return url_report_time+'| %s'%e
     def time_transform(cls,data):
         import time
         timeStamp = float(int(data) / 1000)
@@ -110,9 +113,8 @@ class Typhoon_Minutes:
 
     def typhoon_start(self,name):
         while True:
-            time.sleep(60)
+            self.weather_typhoon_list_check()
             if self.num == 0:
-                self.weather_typhoon_list_check()
                 if self.result_check.list_data == []:
                     self.num = 0
                 else:
@@ -132,6 +134,7 @@ class Typhoon_Minutes:
                         self.result_check.list_data.append('***********************')
                         self.weather_typhoon_list_check()
                         self.result_check.all_wait_data()
+                    time.sleep(60)
                 Test_mail("[vivo]-[%s]-[API]-[台风]-[第%d次]" % (name,self.num), self.path_file).smtp_on()
                 Data_analysis.data_delete(self.path_file)
                 self.result_check.list_data.clear()
@@ -145,5 +148,6 @@ class Typhoon_Minutes:
                     Test_mail("[vivo]-[%s]-[API]-[台风]-[第%d次]" % (name,self.num) ,self.path_file).smtp_on()
                     Data_analysis.data_delete(self.path_file)
                     self.result_check.list_data.clear()
+            time.sleep(60)
 if __name__ == '__main__':
     Typhoon_Minutes('guangzhou','typhoon').typhoon_start('广州')

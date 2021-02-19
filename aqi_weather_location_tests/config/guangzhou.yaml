@@ -1,29 +1,29 @@
 guangzhou:
-  aqi_rul: "http://139.159.198.98/pubDataServer/getPmRank?apikey=0710d94cebb4248a38edef859d11ab35"
+  aqi_rul: "http://139.159.198.98/pubDataServer/getPmRank?apikey=d5ec92b7608c18ff8823cd09e92928e6"
   aqi_sql: "SELECT t.city_id,b.accuCode, b.cityname, b.province, t.aqi, t.aqi_level  FROM xy_w2_city_crawl_china_list b INNER JOIN xy_w2_pm25 t ON b.citycode = t.city_id WHERE t.isvalid = '1' AND t.crawl_time IS NOT NULL AND t.aqi!='0' AND t.city_id IS NOT NULL AND public_time > %d ORDER BY (t.aqi+0)"
-  location_url: "http://139.159.198.98/vivoDbServer/locationgeo?apikey=0710d94cebb4248a38edef859d11ab35&longitude=%f&latitude=%f&locationSystem=GCJ02&language=zh-cn"
+  location_url: "http://139.159.198.98/vivoDbServer/locationgeo?apikey=d5ec92b7608c18ff8823cd09e92928e6&longitude=%f&latitude=%f&locationSystem=GCJ02&language=zh-cn"
   location_sql: "SELECT accuCode,cityName,province,country,timeZone,geoLong,geoLat FROM xy_w2_city_crawl_china_list a WHERE citycode COLLATE utf8mb4_general_ci IN (SELECT area_code FROM `mingzhenbu_city`) AND citycode != parentcode"
   atmosphere_track: "http://typhoon.nmc.cn/weatherservice/typhoon/jsons/view_%s"
   atmosphere_list: "http://typhoon.nmc.cn/weatherservice/typhoon/jsons/list_%s"
   typhoon_list_sql: "select * from typhoon_list"
   typhoon_track_sql: "select * from typhoon_track where typhoon_name_en = '%s' and t2 ='00' ORDER BY t1"
-  typhoon_track_url: "http://139.159.198.98/pubDataServer/gettyphoon?apikey=0710d94cebb4248a38edef859d11ab35&typhoonid=%s"
-  typhoon_list_url: "http://139.159.198.98/pubDataServer/gettyphoonlist?apikey=0710d94cebb4248a38edef859d11ab35"
+  typhoon_track_url: "http://139.159.198.98/pubDataServer/gettyphoon?apikey=d5ec92b7608c18ff8823cd09e92928e6&typhoonid=%s"
+  typhoon_list_url: "http://139.159.198.98/pubDataServer/gettyphoonlist?apikey=d5ec92b7608c18ff8823cd09e92928e6"
   host: 139.9.217.1
   user: testDbUser
   password: Bestweather_zmtq^#@2020
   db: weather
   port: 4108
   charset: utf8
-  minutes_aqi_url: "http://139.159.198.98/pubDataServer/getPmRank?apikey=0710d94cebb4248a38edef859d11ab35"
+  minutes_aqi_url: "http://139.159.198.98/pubDataServer/getPmRank?apikey=d5ec92b7608c18ff8823cd09e92928e6"
   minutes_aqi_sql: "SELECT t.city_id,b.accuCode, b.cityname, b.province, t.aqi, t.aqi_level  FROM xy_w2_city_crawl_china_list b INNER JOIN xy_w2_pm25 t ON b.citycode = t.city_id WHERE t.isvalid = '1' AND accuCode='%s'"
-  minutes_location_url: "http://139.159.198.98/vivoDbServer/locationgeo?apikey=0710d94cebb4248a38edef859d11ab35&longitude=%f&latitude=%f&locationSystem=GCJ02&language=zh-cn"
-  minutes_typhoon_list_url: "http://139.159.198.98/pubDataServer/gettyphoonlist?apikey=0710d94cebb4248a38edef859d11ab35"
+  minutes_location_url: "http://139.159.198.98/vivoDbServer/locationgeo?apikey=d5ec92b7608c18ff8823cd09e92928e6&longitude=%f&latitude=%f&locationSystem=GCJ02&language=zh-cn"
+  minutes_typhoon_list_url: "http://139.159.198.98/pubDataServer/gettyphoonlist?apikey=d5ec92b7608c18ff8823cd09e92928e6"
   minutes_typhoon_track_sql: "select * from typhoon_track WHERE typhoon_code= '%s' and t2 ='00' GROUP BY t1 ORDER BY t1"
   minutes_location_sql: "SELECT * FROM xy_w2_city_crawl_china_list a WHERE accuCode='1921951' "
-  minutes_typhoon_track_url: "http://139.159.198.98/pubDataServer/gettyphoon?apikey=0710d94cebb4248a38edef859d11ab35&typhoonid=%s"
+  minutes_typhoon_track_url: "http://139.159.198.98/pubDataServer/gettyphoon?apikey=d5ec92b7608c18ff8823cd09e92928e6&typhoonid=%s"
   sql: "SELECT * FROM `xy_w2_city_crawl_oversea_list`  limit %d, 10000"
-  baseurl: "http://139.159.198.98/pubDataServer/getweatherpub?apikey=0710d94cebb4248a38edef859d11ab35&citycode=&language=zh_CN&lon=%f&lat=%f&chl=&codeType=1"
-  guangzhou_150million_url: "http://139.159.198.98/pubDataServer/getweatherpub?apikey=0710d94cebb4248a38edef859d11ab35&citycode=%s&language=zh_CN&lon=&lat=&chl=&codeType=1"
-  shanghai_150million_url: "http://pub.zuimeitianqi.com/pubDataServer/getweatherpub?apikey=0710d94cebb4248a38edef859d11ab35&citycode=%s&language=zh_CN&lon=&lat=&chl=&codeType=1"
+  baseurl: "http://139.159.198.98/pubDataServer/getweatherpub?apikey=d5ec92b7608c18ff8823cd09e92928e6&citycode=&language=zh_CN&lon=%f&lat=%f&chl=&codeType=1"
+  guangzhou_150million_url: "http://139.159.198.98/pubDataServer/getweatherpub?apikey=d5ec92b7608c18ff8823cd09e92928e6&citycode=%s&language=zh_CN&lon=&lat=&chl=&codeType=1"
+  shanghai_150million_url: "http://pub.zuimeitianqi.com/pubDataServer/getweatherpub?apikey=d5ec92b7608c18ff8823cd09e92928e6&citycode=%s&language=zh_CN&lon=&lat=&chl=&codeType=1"
   150million_sql: "SELECT * FROM `xy_w2_city_relation_search_huawei` WHERE language_code = 'zh-cn' AND country_id != 'CN' LIMIT %d0000,10000"

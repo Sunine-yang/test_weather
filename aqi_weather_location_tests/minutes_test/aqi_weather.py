@@ -63,7 +63,6 @@ class Aqi_Minutes:
 
     def api_start(self,name):
         while True:
-            time.sleep(60)
             self.aqi_weather()
             if self.num==0:
                 if self.result_check.list_data == []:
@@ -85,6 +84,7 @@ class Aqi_Minutes:
                         self.result_check.list_data.append('***********************')
                         self.aqi_weather()
                         self.result_check.all_wait_data()
+                    time.sleep(60)
                 Test_mail("[vivo]-[%s]-[API]-[空气质量排行榜]-[第%d次]" % (name,self.num), self.path_file).smtp_on()
                 Data_analysis.data_delete(self.path_file)
                 self.result_check.list_data.clear()
@@ -98,6 +98,6 @@ class Aqi_Minutes:
                     Test_mail("[vivo]-[%s]-[API]-[空气质量排行榜]-[第%d次]" % (name,self.num) , self.path_file).smtp_on()
                     Data_analysis.data_delete(self.path_file)
                     self.result_check.list_data.clear()
-
+            time.sleep(60)
 if __name__ == '__main__':
     Aqi_Minutes('guangzhou','guangzhou_aqi').api_start('广州')
