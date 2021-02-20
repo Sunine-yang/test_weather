@@ -39,7 +39,7 @@ class Result_check:
 
     def comparison_none_check(self,*data):
         try:
-            if data[0] != '' or data[0] != {} or data[0] != [] or data[0] =="":
+            if data[0] != '' or data[0] != {} or data[0] != [] or data[0] =="" or data[0] =='null':
                 return ''
             else:
                 return data[-1]%('null')

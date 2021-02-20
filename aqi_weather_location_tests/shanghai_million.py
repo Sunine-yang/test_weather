@@ -9,25 +9,15 @@ sys.path.append(rootPath)
 """
 import time
 from test_cases_run.million_large_partices import Large_Particles
-from tools.html_report_my import Test_mail
+from tools.test_html import Test_mail
 class Test_start:
     def vivo_api(self):
         try:
             for i in range(300):
                 Large_Particles('shanghai').large_particles_start(i, '上海')
         except Exception as e:
-            Test_mail('上海300万站点检测 |：%s' % e).smtp_on()
-    def time_info(self):
-        total_time = time.strftime("%H:%M:%S", time.localtime(float(time.time())))
-        ti = str(total_time)
-        h, m, s = ti.strip().split(':')
-        seconds = int(h) * 3600 + int(m) * 60 + int(s)
-        if seconds>32400 and seconds<54000:
-            result=54000-seconds
-            return result
-        elif seconds>54000 :
-            result=86400-seconds+32400
-            return result
+            Test_mail('上海300万站点检测').error_mail(str(e))
+
 
 if __name__ == '__main__':
     Test_start().vivo_api()

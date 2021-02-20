@@ -86,8 +86,8 @@ class Test_CNTyphoon:
         if Data_analysis.document_check(self.path_name) == None:
             pass
         else:
-            Test_mail("[vivo]-[%s]-[数据]-[中国气象]-[台风列表/详情]-[%d]" % (name, (len(self.result_check.list_data) - 2)),
-                      self.path_name).smtp_on()
+            Test_mail("[vivo]-[%s]-[数据]-[中国气象]-[台风列表/详情]-[%d]" % (name, (len(self.result_check.list_data) - 2))
+                      ).smtp_on(self.path_name)
             Data_analysis.data_delete(self.path_name)
         print(self.result_check.list_data)
         self.result_check.list_data.clear()

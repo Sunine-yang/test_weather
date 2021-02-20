@@ -91,7 +91,7 @@ class Data_analysis:
             return data
 
     @classmethod
-    def hour_time_handle(cls,data=eval(str(int(time.time())) + '000')):
+    def hour_time_handle(cls,data = eval(str(int(time.time())) + '000')):
         timeStamp = float(data / 1000)
         timeArray = time.localtime(timeStamp)
         otherStyleTime = time.strftime("%H", timeArray)

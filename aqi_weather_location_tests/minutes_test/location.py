@@ -28,7 +28,7 @@ class Location_Minutes:
         try:
             url_data = self.yaml['minutes_location_url'] % (float(txt_data[7]), float(txt_data[8]))
             status_code=self.result_check.comparison_check(TestAPI.get_location(url_data).status_code, 200,'状态码:(%s/%s)')
-            url_get_data = eval(TestAPI.get_location(url_data).text)
+            url_get_data = TestAPI.get_location(url_data).json()
             sql_info = '%s,%s,%s,%s |' % (txt_data[2], txt_data[3], txt_data[7], txt_data[8])
             city = self.result_check.comparison_none_check(url_get_data, '| city:(%s)')
             countryCode = self.result_check.comparison_none_check(url_get_data["city"]["countryCode"],
@@ -73,41 +73,41 @@ class Location_Minutes:
 
     def location_start(self,name):
         while True:
-            self.get_location()
-            if self.num == 0:
-                if self.result_check.list_data == []:
-                    self.num=0
-                else:
-                    self.num+=1
-                    self.result_check.all_wait_data()
-                    Test_mail("[vivo]-[%s]-[API]-[定位]-[第%d次]" %(name,self.num) ,self.path_file).smtp_on()
-                    Data_analysis.data_delete('location')
-                    self.result_check.list_data.clear()
-            elif self.num > 4:
-                for i in range(5):
+            try:
+                self.get_location()
+                if self.num == 0:
                     if self.result_check.list_data == []:
-                        self.num = 0
-                        break
+                        self.num=0
+                    else:
+                        self.num+=1
+                        self.result_check.all_wait_data()
+                        Test_mail("[vivo]-[%s]-[API]-[定位经纬度]-[第%d次]" %(name,self.num) ).smtp_on(self.path_file)
+                elif self.num > 4:
+                    for i in range(5):
+                        if self.result_check.list_data == []:
+                            self.num = 0
+                            break
+                        else:
+                            self.num += 1
+                            self.result_check.list_data.append('***********************')
+                            self.get_location()
+                            self.result_check.all_wait_data()
+                        time.sleep(60)
+                    Test_mail("[vivo]-[%s]-[API]-[定位经纬度]-[第%d次]" %(name,self.num) ).smtp_on(self.path_file)
+                elif self.num >= 1 and self.num <= 4:
+                    if self.result_check.list_data == []:
+                        self.num=0
                     else:
                         self.num += 1
-                        self.result_check.list_data.append('***********************')
-                        self.get_location()
                         self.result_check.all_wait_data()
-                    time.sleep(60)
-                Test_mail("[vivo]-[%s]-[API]-[定位]-[第%d次]" %(name,self.num) ,self.path_file).smtp_on()
+                        Test_mail("[vivo]-[%s]-[API]-[定位经纬度]-[第%d次]" %(name,self.num) ).smtp_on(self.path_file)
                 Data_analysis.data_delete(self.path_file)
                 self.result_check.list_data.clear()
-            elif self.num >= 1 and self.num <= 4:
-                if self.result_check.list_data == []:
-                    self.num=0
-                else:
-                    self.num += 1
-                    self.result_check.all_wait_data()
-                    Test_mail("[vivo]-[%s]-[API]-[定位]-[第%d次]" %(name,self.num) , self.path_file).smtp_on()
-                    Data_analysis.data_delete(self.path_file)
-                    self.result_check.list_data.clear()
-            time.sleep(60)
-
+                time.sleep(60)
+                print('定位经纬度 第%s 执行成功' % self.num)
+            except Exception as e:
+                print('定位经纬度 第%s 执行失败' % self.num)
+                Test_mail("[vivo]-[%s]-[API]-[定位经纬度]-[第%d次]" % (name, self.num)).error_mail(str(e))
 
 if __name__ == '__main__':
     Location_Minutes('guangzhou','guangzhou_location').location_start('广州')

@@ -277,12 +277,4 @@ class Large_Particles:
         self.check.list_data.clear()
 if __name__ == '__main__':
     Large_Particles('guangzhou').large_particles_start(0,'全国')
-    # Large_Particles().large_particles_start(10001,20000,'全国')
-    # Large_Particles().large_particles_start(20000,30000,'全国')
-    # Large_Particles().large_particles_start(30001,40000,'全国')
-    # Large_Particles().large_particles_start(40001,50000,'全国')
-    # Large_Particles().large_particles_start(50001,60000,'全国')
-    # Large_Particles().large_particles_start(60001,70000,'全国')
-    # Large_Particles().large_particles_start(70001,80000,'全国')
-    # Large_Particles().large_particles_start(80001,90000,'全国')
-    # Large_Particles().large_particles_start(90001,100000,'全国')
+

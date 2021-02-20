@@ -100,7 +100,7 @@ class Test_weather_api:
         if Data_analysis.document_check(self.path_name)==None:
             pass
         else:
-            Test_mail("[vivo]-[%s]-[数据]-[空气排行榜]-[%d]"%(name,(len(self.result_check.list_data))), self.path_name).smtp_on()
+            Test_mail("[vivo]-[%s]-[数据]-[空气排行榜]-[%d]"%(name,(len(self.result_check.list_data)))).smtp_on(self.path_name)
             Data_analysis.data_delete(self.path_name)
         print(self.result_check.list_data)
         self.result_check.list_data.clear()

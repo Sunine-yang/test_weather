@@ -27,34 +27,37 @@ class Test_Location:
         result1 = EasyMysql(self.services).query_all(self.read_yaml['location_sql'])
         self.txt.write_data('sql_data/location','w+',str(result1))
         txt_data = eval(self.txt.read_data('sql_data/location'))
-        for i in range(len(txt_data)):
+        for i in range(2170,len(txt_data)):
             try:
                 url_data = self.read_yaml["location_url"] % (eval(txt_data[i][5]), eval(txt_data[i][6]))
-                code=self.result_check.comparison_check(TestAPI.get_location(url_data).status_code,200,'| 状态码:(%s/%s)')
-                url_get_data = eval(TestAPI.get_location(url_data).text)
                 sql_info = '%s,%s,%s,%s |' % (txt_data[i][0],txt_data[i][1], txt_data[i][5], txt_data[i][6])
-                city=self.result_check.comparison_none_check(url_get_data,'| city:(%s)')
-                countryCode=self.result_check.comparison_none_check(url_get_data["city"]["countryCode"],'| countryCode:(%s)')
-                parentcity=self.result_check.comparison_none_check(url_get_data["city"]["parentcity"],'| parentcity:(%s)')
-                englishCountryName=self.result_check.comparison_none_check(url_get_data["city"]["englishCountryName"],'| englishCountryName:(%s)')
-                englishCityName=self.result_check.comparison_none_check(url_get_data["city"]["englishCityName"],'| englishCityName:(%s)')
-                administrativearea=self.result_check.comparison_none_check(url_get_data["city"]["administrativearea"],'| administrativearea:(%s)')
-                city_len=self.result_check.comparison_check(len(url_get_data["city"]),11,'| city 字节长度:(%s/%s)')
-                supplementalAdminAreas=self.result_check.comparison_is_none_check(url_get_data["city"]["supplementalAdminAreas"],'| supplementalAdminAreas:(%s)')
-                Cityname=self.result_check.comparison_check(txt_data[i][1],url_get_data["city"]["name"],'| CityCame:(%s/%s)')
-                countryname=self.result_check.comparison_check(txt_data[i][3],url_get_data["city"]["countryname"],'| countryname:(%s/%s)')
-                citycode=self.result_check.comparison_check(txt_data[i][0],url_get_data["city"]["citycode"],'| citycode:(%s/%s)')
-                timezone=self.result_check.comparison_check(txt_data[i][4],url_get_data["city"]["timezone"],'| timezone:(%s&%s)')
-                provincename=self.result_check.comparison_check(txt_data[i][2],url_get_data["city"]["provincename"],'| provincename:(%s&%s)')
-                resultcode=self.result_check.comparison_check(url_get_data["resultcode"],'0','| resultcode:(%s/%s)')
-                esultinfo=self.result_check.comparison_check(url_get_data["resultinfo"],'success.','| esultinfo:(%s/%s)')
-                englishCityNamen=self.result_check.comparison_none_check(url_get_data["city"]["englishCityName"],'| englishCityName:(%s)')
-                location_result = city + countryCode + englishCountryName + administrativearea + city_len + supplementalAdminAreas + Cityname + countryname + \
-                                  citycode + timezone + resultcode + esultinfo+englishCityName+englishCityNamen+code+parentcity+provincename
-                if location_result != '':
-                    self.result_check.list_data.append(sql_info + location_result)
+                url_get_data = TestAPI.get_location(url_data).json()
+                if url_get_data['resultinfo']=='location error!':
+                    self.result_check.list_data.append(sql_info+'| %s 返回信息错误'%url_get_data)
                 else:
-                    print(sql_info+'| 测试通过')
+                    code = self.result_check.comparison_check(TestAPI.get_location(url_data).status_code, 200,'| 状态码:(%s/%s)')
+                    countryCode=self.result_check.comparison_none_check(url_get_data["city"]["countryCode"],'| countryCode:(%s)')
+                    parentcity=self.result_check.comparison_none_check(url_get_data["city"]["parentcity"],'| parentcity:(%s)')
+                    englishCountryName=self.result_check.comparison_none_check(url_get_data["city"]["englishCountryName"],'| englishCountryName:(%s)')
+                    englishCityName=self.result_check.comparison_none_check(url_get_data["city"]["englishCityName"],'| englishCityName:(%s)')
+                    administrativearea=self.result_check.comparison_none_check(url_get_data["city"]["administrativearea"],'| administrativearea:(%s)')
+                    city_len=self.result_check.comparison_check(len(url_get_data["city"]),11,'| city 字节长度:(%s/%s)')
+                    supplementalAdminAreas=self.result_check.comparison_is_none_check(url_get_data["city"]["supplementalAdminAreas"],'| supplementalAdminAreas:(%s)')
+                    Cityname=self.result_check.comparison_check(txt_data[i][1],url_get_data["city"]["name"],'| CityCame:(%s/%s)')
+                    countryname=self.result_check.comparison_check(txt_data[i][3],url_get_data["city"]["countryname"],'| countryname:(%s/%s)')
+                    citycode=self.result_check.comparison_check(txt_data[i][0],url_get_data["city"]["citycode"],'| citycode:(%s/%s)')
+                    timezone=self.result_check.comparison_check(txt_data[i][4],url_get_data["city"]["timezone"],'| timezone:(%s&%s)')
+                    provincename=self.result_check.comparison_check(txt_data[i][2],url_get_data["city"]["provincename"],'| provincename:(%s&%s)')
+                    resultcode=self.result_check.comparison_check(url_get_data["resultcode"],'0','| resultcode:(%s/%s)')
+                    esultinfo=self.result_check.comparison_check(url_get_data["resultinfo"],'success.','| esultinfo:(%s/%s)')
+                    englishCityNamen=self.result_check.comparison_none_check(url_get_data["city"]["englishCityName"],'| englishCityName:(%s)')
+                    location_result =  countryCode + englishCountryName + administrativearea + city_len + supplementalAdminAreas + Cityname + countryname + \
+                                      citycode + timezone + resultcode + esultinfo+englishCityName+englishCityNamen+code+parentcity+provincename
+                    if location_result != '':
+                        self.result_check.list_data.append(sql_info + location_result)
+                    else:
+                        pass
+                        print(sql_info+'| 测试通过')
             except Exception as e:
                 self.logger.error('get_location:'+str(e))
                 self.result_check.list_data.append('%s,%s,%s,%s |' % (txt_data[i][0],txt_data[i][1], txt_data[i][5], txt_data[i][6])+'| %s 不存在'%str(e))
@@ -67,7 +70,7 @@ class Test_Location:
         if Data_analysis.document_check(self.path_name) == None:
             pass
         else:
-            Test_mail("[vivo]-[%s]-[数据]-[定位经纬度]-[%d]" % (name,(len(self.result_check.list_data))), self.path_name).smtp_on()
+            Test_mail("[vivo]-[%s]-[数据]-[定位经纬度]-[%d]" % (name,(len(self.result_check.list_data)))).smtp_on( self.path_name)
             Data_analysis.data_delete(self.path_name)
         print(self.result_check.list_data)
         self.result_check.list_data.clear()

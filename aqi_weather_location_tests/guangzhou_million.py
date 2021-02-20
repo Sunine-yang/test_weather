@@ -9,7 +9,7 @@ sys.path.append(rootPath)
 """
 import time
 from test_cases_run.million_large_partices import Large_Particles
-from tools.html_report_my import Test_mail
+from tools.test_html import Test_mail
 class Test_start:
 
     def vivo_api(self):
@@ -18,7 +18,7 @@ class Test_start:
                 print(i)
                 Large_Particles('guangzhou').large_particles_start(i, '广州')
         except Exception as e:
-            Test_mail('广州300万站点检测 |：%s'%e).smtp_on()
+            Test_mail('广州300万站点检测').error_mail(str(e))
 
 
 
